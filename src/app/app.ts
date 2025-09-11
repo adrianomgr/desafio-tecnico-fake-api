@@ -1,12 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.html',
-  styleUrl: './app.scss'
+  imports: [RouterOutlet, Toast],
+  template: `<router-outlet /> <p-toast />`,
 })
-export class App {
-  protected readonly title = signal('desafio-tecnico-fake-api');
-}
+export class App {}
