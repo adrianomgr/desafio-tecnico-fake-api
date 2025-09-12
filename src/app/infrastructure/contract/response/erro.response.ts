@@ -19,7 +19,22 @@ export class ErroResponse {
   }
 
   static converter(httpError: HttpErrorResponse, messageService?: MessageService): ErroResponse {
-    let errorMessage = (httpError as any).body.message;
+    // Extrair a mensagem de erro de forma segura
+    let errorMessage = 'Erro desconhecido';
+
+    if (httpError.error) {
+      if (typeof httpError.error === 'string') {
+        errorMessage = httpError.error;
+      } else if (httpError.error.message) {
+        errorMessage = httpError.error.message;
+      } else if (httpError.message) {
+        errorMessage = httpError.message;
+      }
+    } else if (httpError.message) {
+      errorMessage = httpError.message;
+    } else if (httpError.statusText) {
+      errorMessage = httpError.statusText;
+    }
 
     if (messageService) {
       messageService.add({

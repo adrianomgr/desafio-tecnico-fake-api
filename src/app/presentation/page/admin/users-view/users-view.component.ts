@@ -5,7 +5,7 @@ import { UserFacadeService } from '@app/abstraction/user-facade.service';
 import { User } from '@app/domain/model/user';
 import { CreateUserRequest } from '@app/infrastructure/contract/request/create-user.request';
 import { UpdateUserRequest } from '@app/infrastructure/contract/request/update-user.request';
-import { UserInitialsPipe } from '@app/presentation/pipe/user-initials.pipe';
+import { UserInitialsPipe } from '@app/presentation/pipe';
 import { passwordMatchValidator } from '@app/presentation/validators';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
@@ -18,7 +18,6 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
-import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
@@ -44,7 +43,6 @@ import { finalize } from 'rxjs';
     TooltipModule,
     AvatarModule,
     FloatLabelModule,
-    SelectModule,
     UserInitialsPipe,
   ],
   providers: [MessageService, ConfirmationService],
@@ -88,9 +86,21 @@ export class UsersViewComponent implements OnInit {
     this.userFacade
       .getAllUsers()
       .pipe(finalize(() => (this.loading = false)))
-      .subscribe((users: User[]) => {
-        this.users = users;
-        this.loading = false;
+      .subscribe({
+        next: (users: User[]) => {
+          this.users = users;
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Erro ao carregar usuários:', error);
+          this.loading = false;
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Erro ao carregar usuários. Tente novamente.',
+            life: 5000,
+          });
+        },
       });
   }
 
@@ -99,11 +109,16 @@ export class UsersViewComponent implements OnInit {
     this.userForm.patchValue({
       username: user.username,
       email: user.email,
+      password: '',
+      confirmPassword: '',
     });
+
+    // Remover validação obrigatória das senhas para edição
     this.userForm.get('password')?.clearValidators();
     this.userForm.get('password')?.updateValueAndValidity();
     this.userForm.get('confirmPassword')?.clearValidators();
     this.userForm.get('confirmPassword')?.updateValueAndValidity();
+
     this.isEditMode = true;
     this.displayDialog = true;
   }
@@ -118,13 +133,24 @@ export class UsersViewComponent implements OnInit {
       acceptButtonStyleClass: 'p-button-danger',
       rejectButtonStyleClass: 'p-button-secondary',
       accept: () => {
-        this.userFacade.deleteUser(user.id).subscribe(() => {
-          this.loadUsers();
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Sucesso',
-            detail: 'Usuário deletado com sucesso',
-          });
+        this.userFacade.deleteUser(user.id).subscribe({
+          next: () => {
+            this.loadUsers();
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Sucesso',
+              detail: 'Usuário deletado com sucesso',
+            });
+          },
+          error: (error) => {
+            console.error('Erro ao deletar usuário:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erro',
+              detail: 'Erro ao deletar usuário. Tente novamente.',
+              life: 5000,
+            });
+          },
         });
       },
     });
@@ -134,10 +160,13 @@ export class UsersViewComponent implements OnInit {
     this.selectedUser = null;
     this.isEditMode = false;
     this.userForm.reset();
+
+    // Reestabelecer validações para criação
     this.userForm.get('password')?.setValidators([Validators.required]);
     this.userForm.get('password')?.updateValueAndValidity();
     this.userForm.get('confirmPassword')?.setValidators([Validators.required]);
     this.userForm.get('confirmPassword')?.updateValueAndValidity();
+
     this.displayDialog = true;
   }
 
@@ -153,14 +182,25 @@ export class UsersViewComponent implements OnInit {
           email: formValue.email,
         });
 
-        this.userFacade.updateUser(this.selectedUser.id, updateRequest).subscribe(() => {
-          this.loadUsers();
-          this.hideDialog();
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Sucesso',
-            detail: 'Usuário atualizado com sucesso',
-          });
+        this.userFacade.updateUser(this.selectedUser.id, updateRequest).subscribe({
+          next: () => {
+            this.loadUsers();
+            this.hideDialog();
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Sucesso',
+              detail: 'Usuário atualizado com sucesso',
+            });
+          },
+          error: (error) => {
+            console.error('Erro ao atualizar usuário:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erro',
+              detail: 'Erro ao atualizar usuário. Tente novamente.',
+              life: 5000,
+            });
+          },
         });
       } else {
         // Criar novo usuário
@@ -170,14 +210,25 @@ export class UsersViewComponent implements OnInit {
           password: formValue.password,
         });
 
-        this.userFacade.createUser(createRequest).subscribe(() => {
-          this.loadUsers();
-          this.hideDialog();
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Sucesso',
-            detail: 'Usuário criado com sucesso',
-          });
+        this.userFacade.createUser(createRequest).subscribe({
+          next: () => {
+            this.loadUsers();
+            this.hideDialog();
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Sucesso',
+              detail: 'Usuário criado com sucesso',
+            });
+          },
+          error: (error) => {
+            console.error('Erro ao criar usuário:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erro',
+              detail: 'Erro ao criar usuário. Tente novamente.',
+              life: 5000,
+            });
+          },
         });
       }
     }

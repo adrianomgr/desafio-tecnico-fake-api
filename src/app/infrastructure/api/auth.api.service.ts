@@ -59,7 +59,6 @@ export class AuthApiService {
           const userId = decodedToken.sub;
 
           this.idcurrentUser.set(userId);
-
           this.isAuthenticatedSubject.next(true);
         }
       })

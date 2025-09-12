@@ -14,19 +14,12 @@ export class UserApiService {
 
   constructor(private readonly http: HttpClient) {}
 
-  // Buscar todos os usuários da FakeStore API
   getAllUsers(): Observable<User[]> {
     return this.http
       .get<User[]>(`${this.baseUrl}/users`)
       .pipe(map((users) => users.map((user) => new User(user))));
   }
 
-  // Buscar usuário por ID
-  getUserById(id: number): Observable<User> {
-    return this.http.get<User>(`${this.baseUrl}/users/${id}`).pipe(map((user) => new User(user)));
-  }
-
-  // Criar novo usuário (usando FakeStore API format)
   createUser(user: CreateUserRequest): Observable<User> {
     const userData = {
       email: user.email,
@@ -39,7 +32,6 @@ export class UserApiService {
       .pipe(map((createdUser) => new User(createdUser)));
   }
 
-  // Atualizar usuário
   updateUser(id: number, user: UpdateUserRequest): Observable<User> {
     const userData = {
       email: user.email,
@@ -52,22 +44,7 @@ export class UserApiService {
       .pipe(map((updatedUser) => new User(updatedUser)));
   }
 
-  // Deletar usuário
-  deleteUser(id: number): Observable<User> {
-    return this.http.delete<User>(`${this.baseUrl}/users/${id}`);
-  }
-
-  // Buscar usuários com limite
-  getLimitedUsers(limit: number): Observable<User[]> {
-    return this.http
-      .get<User[]>(`${this.baseUrl}/users?limit=${limit}`)
-      .pipe(map((users) => users.map((user) => new User(user))));
-  }
-
-  // Buscar usuários ordenados
-  getSortedUsers(sort: 'asc' | 'desc'): Observable<User[]> {
-    return this.http
-      .get<User[]>(`${this.baseUrl}/users?sort=${sort}`)
-      .pipe(map((users) => users.map((user) => new User(user))));
+  deleteUser(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/users/${id}`);
   }
 }

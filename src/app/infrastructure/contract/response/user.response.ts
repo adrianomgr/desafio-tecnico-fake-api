@@ -7,7 +7,7 @@ export class UserResponse {
   password!: string;
 
   static converterLista(dados: UserResponse[]): User[] {
-    return dados.map((item) => this.converter(item));
+    return dados.map((item) => UserResponse.converter(item));
   }
 
   static converter(dados: UserResponse): User {

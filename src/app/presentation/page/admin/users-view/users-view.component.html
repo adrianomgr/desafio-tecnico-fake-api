@@ -1,61 +1,66 @@
-<div class="users-management">
-  <div class="page-header">
-    <h1>Gerenciar Usuários</h1>
-    <p-button label="Novo Usuário" icon="pi pi-user-plus" (onClick)="showCreateDialog()"></p-button>
-  </div>
+<div class="admin-page">
+  <div class="main-content-card">
+    <div class="admin-header">
+      <h1 class="admin-page-title">Gerenciar Usuários</h1>
+      <p-button
+        label="Novo Usuário"
+        icon="pi pi-user-plus"
+        class="primary-action-btn"
+        (onClick)="showCreateDialog()"
+      ></p-button>
+    </div>
 
-  <p-card class="users-table-card">
-    <ng-template pTemplate="content">
-      <p-table
-        [value]="users"
-        [paginator]="true"
-        [rows]="10"
-        [showCurrentPageReport]="true"
-        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} usuários"
-        [globalFilterFields]="['username', 'email']"
-        #dt
-      >
-        <ng-template pTemplate="caption">
-          <div class="table-header">
-            <p-inputgroup>
-              <p-inputgroup-addon>
-                <i class="pi pi-search"></i>
-              </p-inputgroup-addon>
-              <input
-                pInputText
-                type="text"
-                (input)="dt.filterGlobal($any($event.target).value, 'contains')"
-                placeholder="Buscar usuários..."
-              />
-            </p-inputgroup>
+    <p-table
+      [value]="users"
+      [paginator]="true"
+      [rows]="10"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} usuários"
+      [globalFilterFields]="['username', 'email']"
+      #dt
+    >
+      <ng-template pTemplate="caption">
+        <div class="table-header">
+          <span class="table-title">Usuários</span>
+          <div class="search-input-container">
+            <input
+              pInputText
+              type="text"
+              (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+              placeholder="Buscar usuários..."
+              class="search-input"
+            />
           </div>
-        </ng-template>
+        </div>
+      </ng-template>
 
-        <ng-template pTemplate="header">
-          <tr>
-            <th scope="col">Avatar</th>
-            <th scope="col">Username</th>
-            <th scope="col">Email</th>
-            <th scope="col">Ações</th>
-          </tr>
-        </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th scope="col">Avatar</th>
+          <th scope="col">Username</th>
+          <th scope="col">Email</th>
+          <th scope="col">Ações</th>
+        </tr>
+      </ng-template>
 
-        <ng-template pTemplate="body" let-user>
-          <tr>
-            <td>
-              <p-avatar
-                [label]="user.username | userInitials"
-                shape="circle"
-                size="normal"
-              ></p-avatar>
-            </td>
-            <td>{{ user.username }}</td>
-            <td>{{ user.email }}</td>
-            <td>
+      <ng-template pTemplate="body" let-user>
+        <tr>
+          <td>
+            <p-avatar
+              [label]="user.username | userInitials"
+              shape="circle"
+              size="normal"
+            ></p-avatar>
+          </td>
+          <td>{{ user.username }}</td>
+          <td>{{ user.email }}</td>
+          <td>
+            <div class="action-buttons">
               <p-button
                 icon="pi pi-pencil"
                 severity="info"
                 [text]="true"
+                class="edit-btn"
                 (onClick)="editUser(user)"
                 pTooltip="Editar"
               ></p-button>
@@ -63,15 +68,16 @@
                 icon="pi pi-trash"
                 severity="danger"
                 [text]="true"
+                class="delete-btn"
                 (onClick)="deleteUser(user)"
                 pTooltip="Deletar"
               ></p-button>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </ng-template>
-  </p-card>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
 
   <p-dialog
     header="Gerenciar Usuário"
@@ -80,24 +86,23 @@
     [style]="{ width: '600px' }"
     [closable]="true"
   >
-    <form [formGroup]="userForm" (ngSubmit)="saveUser()">
-      <div class="form-grid mt-4">
-        <div class="form-field my-2">
+    <form [formGroup]="userForm" (ngSubmit)="saveUser()" class="admin-form">
+      <div class="form-grid">
+        <div class="form-field">
           <p-floatlabel>
             <input id="username" type="text" pInputText formControlName="username" class="w-full" />
             <label for="username">Username *</label>
           </p-floatlabel>
         </div>
 
-        <div class="form-field my-2">
+        <div class="form-field">
           <p-floatlabel>
             <input id="email" type="email" pInputText formControlName="email" class="w-full" />
             <label for="email">Email *</label>
           </p-floatlabel>
         </div>
 
-        @if (!selectedUser) {
-        <div class="form-field my-2">
+        <div class="form-field">
           <p-floatlabel>
             <p-password
               id="password"
@@ -108,11 +113,14 @@
               [toggleMask]="true"
               inputStyleClass="w-full"
             ></p-password>
-            <label for="password">Senha *</label>
+            <label for="password">{{ selectedUser ? 'Nova Senha' : 'Senha *' }}</label>
           </p-floatlabel>
+          @if (selectedUser) {
+          <small class="p-info">Deixe em branco para manter a senha atual</small>
+          }
         </div>
 
-        <div class="form-field my-2">
+        <div class="form-field">
           <p-floatlabel>
             <p-password
               id="confirmPassword"
@@ -123,21 +131,30 @@
               [toggleMask]="true"
               inputStyleClass="w-full"
             ></p-password>
-            <label for="confirmPassword">Confirmar Senha *</label>
+            <label for="confirmPassword">{{
+              selectedUser ? 'Confirmar Nova Senha' : 'Confirmar Senha *'
+            }}</label>
           </p-floatlabel>
           @if (userForm.get('confirmPassword')?.touched && userForm.hasError('passwordMismatch')) {
           <small class="p-error"> As senhas não coincidem </small>
           }
         </div>
-        }
-      </div>
-
-      <div class="dialog-footer">
-        <p-button label="Cancelar" severity="secondary" (onClick)="hideDialog()"></p-button>
-        <p-button label="Salvar" type="submit" [disabled]="userForm.invalid"></p-button>
       </div>
     </form>
+
+    <ng-template pTemplate="footer">
+      <div class="dialog-footer">
+        <p-button label="Cancelar" severity="secondary" (onClick)="hideDialog()"></p-button>
+        <p-button
+          label="Salvar"
+          severity="primary"
+          [disabled]="userForm.invalid"
+          (onClick)="saveUser()"
+        ></p-button>
+      </div>
+    </ng-template>
   </p-dialog>
+
+  <p-toast></p-toast>
+  <p-confirmDialog></p-confirmDialog>
 </div>
-<p-toast></p-toast>
-<p-confirmDialog></p-confirmDialog>
