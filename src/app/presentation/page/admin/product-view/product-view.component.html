@@ -1,0 +1,241 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+<div class="admin-page">
+  <div class="main-content-card">
+    <div class="admin-header">
+      <h1 class="admin-page-title">Gerenciamento de Produtos</h1>
+      <p-button
+        label="Novo Produto"
+        icon="pi pi-plus"
+        class="primary-action-btn"
+        (click)="openNew()"
+      ></p-button>
+    </div>
+
+    <p-table
+      #dt
+      [value]="products"
+      [loading]="loading"
+      dataKey="id"
+      [rows]="10"
+      [paginator]="true"
+      [globalFilterFields]="['title', 'category', 'description']"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} produtos"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      class="admin-table"
+    >
+      <ng-template pTemplate="caption">
+        <div class="table-header">
+          <span class="table-title">Produtos</span>
+          <div class="search-input-container">
+            <input
+              pInputText
+              type="text"
+              (input)="onGlobalFilter(dt, $event)"
+              placeholder="Buscar produtos..."
+              class="search-input"
+            />
+          </div>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 80px">Imagem</th>
+          <th pSortableColumn="title">Título <p-sortIcon field="title"></p-sortIcon></th>
+          <th pSortableColumn="price">Preço <p-sortIcon field="price"></p-sortIcon></th>
+          <th pSortableColumn="category">Categoria <p-sortIcon field="category"></p-sortIcon></th>
+          <th style="width: 120px">Ações</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-product>
+        <tr>
+          <td>
+            <p-image
+              [src]="product.image"
+              [alt]="product.title"
+              width="50"
+              height="50"
+              [preview]="false"
+              class="border-round"
+            ></p-image>
+          </td>
+          <td>
+            <div class="font-medium text-900">{{ product.title }}</div>
+            <div class="text-sm text-600 line-clamp-2">{{ product.description }}</div>
+          </td>
+          <td>
+            <span class="font-semibold text-green-600">
+              {{ product.price | currency : 'USD' : 'symbol' : '1.2-2' }}
+            </span>
+          </td>
+          <td>
+            <p-tag
+              [value]="product.category | categoryLabel"
+              [severity]="product.category | categorySeverity"
+            ></p-tag>
+          </td>
+          <td>
+            <div class="flex gap-2">
+              <p-button
+                icon="pi pi-pencil"
+                severity="info"
+                size="small"
+                (click)="editProduct(product)"
+                pTooltip="Editar"
+              ></p-button>
+              <p-button
+                icon="pi pi-trash"
+                severity="danger"
+                size="small"
+                (click)="deleteProduct(product)"
+                pTooltip="Excluir"
+              ></p-button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="5" class="text-center p-4">
+            <div class="text-gray-500">
+              <i class="pi pi-inbox text-4xl mb-2"></i>
+              <p>Nenhum produto encontrado</p>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Dialog para criar/editar produto -->
+  <p-dialog
+    [(visible)]="productDialog"
+    [style]="{ width: '600px' }"
+    header="Detalhes do Produto"
+    [modal]="true"
+    class="admin-dialog"
+  >
+    <ng-template pTemplate="content">
+      <form [formGroup]="productForm" class="admin-form">
+        <div class="form-row">
+          <div class="form-field">
+            <label for="title" class="form-label">Título *</label>
+            <input
+              id="title"
+              type="text"
+              pInputText
+              formControlName="title"
+              class="form-input"
+              [class.ng-invalid]="
+                productForm.get('title')?.invalid && productForm.get('title')?.touched
+              "
+            />
+            @if (productForm.get('title')?.invalid && productForm.get('title')?.touched) {
+            <small class="form-error"> Título é obrigatório. </small>
+            }
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label for="price" class="form-label">Preço *</label>
+            <p-inputNumber
+              id="price"
+              formControlName="price"
+              mode="currency"
+              currency="USD"
+              locale="en-US"
+              class="form-input"
+              [class.ng-invalid]="
+                productForm.get('price')?.invalid && productForm.get('price')?.touched
+              "
+            ></p-inputNumber>
+            @if (productForm.get('price')?.invalid && productForm.get('price')?.touched) {
+            <small class="form-error"> Preço é obrigatório. </small>
+            }
+          </div>
+
+          <div class="form-field">
+            <label for="category" class="form-label">Categoria *</label>
+            <p-select
+              id="category"
+              [options]="categoryOptions"
+              formControlName="category"
+              placeholder="Selecione uma categoria"
+              class="form-input"
+              [class.ng-invalid]="
+                productForm.get('category')?.invalid && productForm.get('category')?.touched
+              "
+            ></p-select>
+            @if (productForm.get('category')?.invalid && productForm.get('category')?.touched) {
+            <small class="form-error"> Categoria é obrigatória. </small>
+            }
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label for="image" class="form-label">URL da Imagem *</label>
+            <input
+              id="image"
+              type="text"
+              pInputText
+              formControlName="image"
+              class="form-input"
+              [class.ng-invalid]="
+                productForm.get('image')?.invalid && productForm.get('image')?.touched
+              "
+            />
+            @if (productForm.get('image')?.invalid && productForm.get('image')?.touched) {
+            <small class="form-error"> URL da imagem é obrigatória. </small>
+            }
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label for="description" class="form-label">Descrição *</label>
+            <textarea
+              id="description"
+              pInputTextarea
+              formControlName="description"
+              rows="4"
+              class="form-input"
+              [class.ng-invalid]="
+                productForm.get('description')?.invalid && productForm.get('description')?.touched
+              "
+            ></textarea>
+            @if (productForm.get('description')?.invalid && productForm.get('description')?.touched)
+            {
+            <small class="form-error"> Descrição é obrigatória. </small>
+            }
+          </div>
+        </div>
+      </form>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+      <div class="dialog-footer">
+        <p-button
+          label="Cancelar"
+          icon="pi pi-times"
+          class="secondary-btn"
+          (click)="hideDialog()"
+        ></p-button>
+        <p-button
+          label="Salvar"
+          icon="pi pi-check"
+          [loading]="savingProduct"
+          (click)="saveProduct()"
+          [disabled]="productForm.invalid"
+          class="primary-btn"
+        ></p-button>
+      </div>
+    </ng-template>
+  </p-dialog>
+</div>

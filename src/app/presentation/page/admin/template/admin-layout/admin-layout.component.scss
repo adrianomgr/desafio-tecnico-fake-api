@@ -22,10 +22,40 @@
       padding: 24px;
       overflow-y: auto;
       background: var(--p-surface-ground);
+
+      // Layout específico do admin-layout
+      .admin-page {
+        max-width: 1400px;
+        margin: 0 auto;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .main-content-card {
+        background: var(--p-surface-card);
+        border-radius: 12px;
+        padding: 32px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--p-surface-border);
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      // Responsividade específica do layout
+      @media (max-width: 768px) {
+        .main-content-card {
+          padding: 20px;
+          margin: 0;
+          border-radius: 0;
+        }
+      }
     }
   }
 }
 
+// Responsividade do sidebar
 @media (max-width: 768px) {
   .admin-layout {
     .sidebar {
