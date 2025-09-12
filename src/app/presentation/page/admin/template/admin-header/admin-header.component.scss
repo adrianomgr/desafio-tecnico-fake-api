@@ -1,0 +1,63 @@
+// Estilos específicos para o header admin
+:host {
+  .p-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    .p-toolbar-group-start {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .p-toolbar-group-end {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+  }
+
+  // Badge customizado para notificações
+  .p-badge {
+    min-width: 1.2rem;
+    height: 1.2rem;
+    line-height: 1.2rem;
+    font-size: 0.75rem;
+  }
+
+  // Avatar do usuário
+  .p-avatar {
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+}
+
+::ng-deep .logout-button {
+  background-color: #e74c3c !important;
+  color: white !important;
+  border: 1px solid #e74c3c !important;
+
+  .p-button-icon {
+    color: white !important;
+  }
+
+  &:hover {
+    background-color: #c0392b !important;
+    border-color: #c0392b !important;
+    color: white !important;
+
+    .p-button-icon {
+      color: white !important;
+    }
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.3) !important;
+    background-color: #e74c3c !important;
+  }
+}

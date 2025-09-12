@@ -1,0 +1,41 @@
+<p-toolbar styleClass="border-none px-6 bg-white shadow-2">
+  <div class="p-toolbar-group-start">
+    <div class="text-xl font-bold text-primary ml-2">Marketplace Admin</div>
+  </div>
+
+  <div class="p-toolbar-group-end">
+    <!-- Informações do Usuário -->
+    <div class="flex align-items-center gap-2">
+      <p-avatar
+        [label]="currentUserName | userInitials"
+        styleClass="bg-primary text-white"
+        shape="circle"
+        size="normal"
+      ></p-avatar>
+
+      <div class="hidden md:block">
+        <div class="text-sm font-medium text-900">{{ currentUserName }}</div>
+        <div class="text-xs text-600">{{ currentUserEmail }}</div>
+      </div>
+
+      <!-- Menu do usuário -->
+      <p-button
+        icon="pi pi-sign-out"
+        styleClass="p-button-text p-button-plain logout-button"
+        (click)="logout()"
+        (keydown.enter)="logout()"
+        (keydown.space)="logout()"
+        pTooltip="Logout"
+        tooltipPosition="bottom"
+        ariaLabel="Fazer logout"
+      ></p-button>
+    </div>
+  </div>
+</p-toolbar>
+
+<!-- Dialog de confirmação -->
+<p-confirmDialog
+  [style]="{ width: '450px' }"
+  [baseZIndex]="10000"
+  rejectButtonStyleClass="p-button-text"
+></p-confirmDialog>
