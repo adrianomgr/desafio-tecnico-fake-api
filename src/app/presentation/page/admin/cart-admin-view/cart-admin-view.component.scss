@@ -1,0 +1,117 @@
+// Estilos específicos do cart-admin-view
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+  vertical-align: top;
+}
+
+.product-list {
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+.cart-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.product-image {
+  object-fit: cover;
+}
+
+// Estilo para a tabela de produtos aninhada
+:host ::ng-deep .products-table {
+  .p-datatable {
+    border: 1px solid var(--surface-border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .p-datatable-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+  }
+
+  .p-datatable-thead > tr > th {
+    background: var(--surface-50);
+    border-bottom: 2px solid var(--surface-border);
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 1rem 0.75rem;
+    text-align: left;
+    color: var(--text-color);
+
+    &.image-column {
+      width: 80px;
+      text-align: center;
+    }
+
+    &.quantity-column {
+      width: 120px;
+      text-align: center;
+    }
+
+    &.subtotal-column {
+      width: 140px;
+      text-align: right;
+    }
+  }
+
+  .p-datatable-tbody > tr {
+    border-bottom: 1px solid var(--surface-border);
+
+    &:hover {
+      background: var(--surface-50);
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .p-datatable-tbody > tr > td {
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+    border-bottom: none;
+
+    &.image-cell {
+      text-align: center;
+      width: 80px;
+    }
+
+    &:nth-child(3) {
+      // Coluna quantidade
+      text-align: center;
+      width: 120px;
+    }
+
+    &:nth-child(4) {
+      // Coluna subtotal
+      text-align: right;
+      width: 140px;
+    }
+  }
+}
+
+// Estilos para imagens pequenas na tabela aninhada
+.product-image-small {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 6px;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+  border: 1px solid var(--surface-border);
+}
+
+.product-image-placeholder {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 6px;
+  background: var(--surface-100);
+  border: 1px solid var(--surface-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}

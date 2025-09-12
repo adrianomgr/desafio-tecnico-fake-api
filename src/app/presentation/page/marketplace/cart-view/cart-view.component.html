@@ -1,0 +1,229 @@
+<p-toast></p-toast>
+
+<div class="cart-container">
+  <!-- Header -->
+  <div class="cart-header p-4 border-b">
+    <div class="flex justify-content-between align-items-center">
+      <h1 class="text-2xl font-bold mb-0">Meu Carrinho</h1>
+      <p-button
+        label="Continuar Comprando"
+        icon="pi pi-shopping-bag"
+        [outlined]="true"
+        (onClick)="continueShopping()"
+      ></p-button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  @if (loading) {
+  <div class="flex justify-content-center p-8">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+  }
+
+  <!-- Error -->
+  @if (error && !loading) {
+  <div class="p-4">
+    <div class="p-message p-message-error">
+      <span class="p-message-icon pi pi-times-circle"></span>
+      <div class="p-message-text">
+        <p>Erro ao carregar carrinho. Tente novamente.</p>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Empty Cart -->
+  @if (cartItems.length === 0 && !loading && !error) {
+  <div class="empty-cart text-center p-8">
+    <i class="pi pi-shopping-cart text-6xl text-gray-400 mb-4"></i>
+    <h2 class="text-xl font-semibold mb-2">Seu carrinho está vazio</h2>
+    <p class="text-gray-600 mb-4">Adicione produtos para começar suas compras</p>
+    <p-button
+      label="Explorar Produtos"
+      icon="pi pi-search"
+      (onClick)="continueShopping()"
+    ></p-button>
+  </div>
+  }
+
+  <!-- Cart Items -->
+  @if (cartItems.length > 0 && !loading) {
+  <div class="cart-content p-4">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <!-- Items List -->
+      <div class="lg:col-span-2">
+        <div class="cart-items">
+          <div class="flex justify-content-between align-items-center mb-4">
+            <h3 class="text-lg font-semibold">Itens no Carrinho ({{ getCartItemCount() }})</h3>
+            <p-button
+              label="Limpar Carrinho"
+              icon="pi pi-trash"
+              severity="danger"
+              [outlined]="true"
+              size="small"
+              (onClick)="clearCart()"
+            ></p-button>
+          </div>
+
+          @for (item of cartItems; track item.productId) {
+          <p-card class="cart-item mb-3">
+            <div class="flex gap-4">
+              <!-- Product Image -->
+              <div class="product-image-container">
+                @if (item.product) {
+                <p-image
+                  [src]="item.product.image"
+                  [alt]="item.product.title"
+                  width="100"
+                  height="100"
+                  [preview]="false"
+                  class="border-round cursor-pointer"
+                  (onClick)="viewProductDetail(item.productId)"
+                ></p-image>
+                } @else {
+                <div
+                  class="image-placeholder flex align-items-center justify-content-center bg-gray-100 border-round"
+                >
+                  <i class="pi pi-image text-gray-400 text-3xl"></i>
+                </div>
+                }
+              </div>
+
+              <!-- Product Details -->
+              <div class="product-details flex-1">
+                @if (item.product) {
+                <h4
+                  class="product-title font-semibold mb-2 cursor-pointer hover:text-primary"
+                  (click)="viewProductDetail(item.productId)"
+                >
+                  {{ item.product.title }}
+                </h4>
+                <p class="product-description text-gray-600 text-sm mb-2 line-clamp-2">
+                  {{ item.product.description }}
+                </p>
+                <p-tag
+                  [value]="item.product.category | categoryLabel"
+                  [severity]="item.product.category | categorySeverity"
+                  class="mb-2"
+                ></p-tag>
+                } @else {
+                <div class="text-gray-500">
+                  <p>Produto não encontrado</p>
+                </div>
+                }
+              </div>
+
+              <!-- Quantity and Price -->
+              <div class="item-controls flex flex-column align-items-end gap-3">
+                @if (item.product) {
+                <div class="price text-xl font-bold text-green-600">
+                  {{ item.product.price | currency : 'USD' : 'symbol' : '1.2-2' }}
+                </div>
+                }
+
+                <div class="quantity-controls flex align-items-center gap-2">
+                  <label class="text-sm font-medium">Qtd:</label>
+                  <p-inputNumber
+                    [(ngModel)]="item.quantity"
+                    [min]="1"
+                    [max]="99"
+                    [showButtons]="true"
+                    buttonLayout="horizontal"
+                    size="small"
+                    [style]="{ width: '120px' }"
+                    [disabled]="updatingItem === item.productId"
+                    (onInput)="updateQuantity(item.productId, toNumber($event.value || 0))"
+                  ></p-inputNumber>
+                </div>
+
+                @if (item.product) {
+                <div class="subtotal text-lg font-semibold">
+                  Subtotal:
+                  {{ item.product.price * item.quantity | currency : 'USD' : 'symbol' : '1.2-2' }}
+                </div>
+                }
+
+                <p-button
+                  icon="pi pi-trash"
+                  severity="danger"
+                  [outlined]="true"
+                  size="small"
+                  (onClick)="removeItem(item.productId)"
+                  pTooltip="Remover item"
+                ></p-button>
+              </div>
+            </div>
+          </p-card>
+          }
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="lg:col-span-1">
+        <p-card class="order-summary sticky top-4">
+          <ng-template pTemplate="header">
+            <h3 class="font-semibold mb-0">Resumo do Pedido</h3>
+          </ng-template>
+
+          <div class="summary-details">
+            <div class="flex justify-content-between mb-3">
+              <span>Itens ({{ getCartItemCount() }}):</span>
+              <span class="font-semibold">{{
+                getCartTotal() | currency : 'USD' : 'symbol' : '1.2-2'
+              }}</span>
+            </div>
+
+            <div class="flex justify-content-between mb-3">
+              <span>Frete:</span>
+              <span class="text-green-600 font-semibold">
+                @if (getCartTotal() >= 50) { Grátis } @else {
+                {{ 9.99 | currency : 'USD' : 'symbol' : '1.2-2' }}
+                }
+              </span>
+            </div>
+
+            <hr class="my-3" />
+
+            <div class="flex justify-content-between mb-4">
+              <span class="text-lg font-bold">Total:</span>
+              <span class="text-xl font-bold text-green-600">
+                {{
+                  getCartTotal() + (getCartTotal() >= 50 ? 0 : 9.99)
+                    | currency : 'USD' : 'symbol' : '1.2-2'
+                }}
+              </span>
+            </div>
+
+            @if (getCartTotal() < 50) {
+            <div class="shipping-notice p-3 bg-blue-50 border-left-3 border-blue-500 mb-4">
+              <p class="text-sm text-blue-700 mb-0">
+                <i class="pi pi-info-circle mr-2"></i>
+                Adicione {{ 50 - getCartTotal() | currency : 'USD' : 'symbol' : '1.2-2' }}
+                para ganhar frete grátis!
+              </p>
+            </div>
+            }
+
+            <p-button
+              label="Finalizar Compra"
+              icon="pi pi-credit-card"
+              severity="success"
+              class="w-full"
+              size="large"
+              (onClick)="proceedToCheckout()"
+            ></p-button>
+
+            <div class="security-info text-center mt-3">
+              <p class="text-xs text-gray-500 mb-0">
+                <i class="pi pi-shield mr-1"></i>
+                Compra 100% segura e protegida
+              </p>
+            </div>
+          </div>
+        </p-card>
+      </div>
+    </div>
+  </div>
+  }
+</div>

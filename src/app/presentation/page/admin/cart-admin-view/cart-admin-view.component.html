@@ -1,0 +1,180 @@
+<p-toast></p-toast>
+
+<div class="admin-page">
+  <div class="main-content-card">
+    <div class="admin-header">
+      <h1 class="admin-page-title">Gerenciamento de Carrinhos</h1>
+      <p-button
+        label="Atualizar"
+        icon="pi pi-refresh"
+        class="primary-action-btn"
+        (click)="refreshCarts()"
+        (keydown.enter)="refreshCarts()"
+      ></p-button>
+    </div>
+
+    <p-table
+      #dt
+      [value]="carts"
+      [loading]="loading"
+      dataKey="id"
+      [rows]="10"
+      [paginator]="true"
+      [globalFilterFields]="['id', 'userId', 'user.username', 'user.email']"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} carrinhos"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      [expandedRowKeys]="expandedRows"
+      class="admin-table"
+    >
+      <ng-template pTemplate="caption">
+        <div class="table-header">
+          <span class="table-title">Carrinhos</span>
+          <div class="search-input-container">
+            <input
+              pInputText
+              type="text"
+              (input)="onGlobalFilter(dt, $event)"
+              placeholder="Buscar carrinhos..."
+              class="search-input"
+            />
+          </div>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th scope="col" style="width: 5rem">Expandir</th>
+          <th scope="col" pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
+          <th scope="col" pSortableColumn="userId">
+            Usuário <p-sortIcon field="userId"></p-sortIcon>
+          </th>
+          <th scope="col" pSortableColumn="date">Data <p-sortIcon field="date"></p-sortIcon></th>
+          <th scope="col">Total de Itens</th>
+          <th scope="col">Valor Total</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-cart>
+        <tr>
+          <td>
+            <p-button
+              type="button"
+              pRipple
+              class="p-button-text p-button-rounded p-button-plain"
+              [icon]="isRowExpanded(cart) ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+              (onClick)="toggleRow(cart)"
+            ></p-button>
+          </td>
+          <td>
+            <span class="font-semibold text-blue-600">#{{ cart.id }}</span>
+          </td>
+          <td>
+            <span class="font-semibold">{{ getUserDisplayName(cart) }}</span>
+          </td>
+          <td>
+            <span>{{ formatDate(cart.date) }}</span>
+          </td>
+          <td>
+            <p-tag
+              [value]="cart.totalItems?.toString() || '0'"
+              severity="info"
+              icon="pi pi-shopping-cart"
+            ></p-tag>
+          </td>
+          <td>
+            <span class="font-semibold text-green-600">
+              {{ formatCurrency(cart.totalValue || 0) }}
+            </span>
+          </td>
+        </tr>
+
+        <!-- Linha expandida inline -->
+        @if (isRowExpanded(cart)) {
+        <tr>
+          <td colspan="6" class="p-0">
+            <div class="p-4 surface-50 border-top-1 surface-border">
+              @if (cart.productsWithDetails && cart.productsWithDetails.length > 0) {
+              <p-table
+                [value]="cart.productsWithDetails"
+                class="products-table"
+                [tableStyle]="{ 'min-width': '100%' }"
+                [size]="'small'"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th scope="col" class="image-column">Imagem</th>
+                    <th scope="col">Título</th>
+                    <th scope="col" class="quantity-column">Quantidade</th>
+                    <th scope="col" class="subtotal-column">Subtotal</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item>
+                  <tr>
+                    <td class="image-cell">
+                      @if (item.product?.image) {
+                      <img
+                        [src]="item.product.image"
+                        [alt]="item.product.title || 'Produto'"
+                        [title]="item.product.title || 'Produto'"
+                        class="product-image-small"
+                      />
+                      } @else {
+                      <div class="product-image-placeholder">
+                        <i class="pi pi-image text-gray-400 text-xs" aria-label="Sem imagem"></i>
+                      </div>
+                      }
+                    </td>
+                    <td>
+                      <span class="font-medium">
+                        {{ item.product?.title || 'Produto ' + item.productId }}
+                      </span>
+                    </td>
+                    <td class="text-center">
+                      <p-tag [value]="item.quantity.toString()" severity="info"></p-tag>
+                    </td>
+                    <td class="text-right">
+                      <span class="font-semibold text-green-600">
+                        {{ formatCurrency(item.subtotal || 0) }}
+                      </span>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+              } @else {
+              <div class="text-center text-gray-500 p-4">
+                <i class="pi pi-inbox text-4xl mb-2"></i>
+                <p>Nenhum produto encontrado no carrinho</p>
+              </div>
+              }
+            </div>
+          </td>
+        </tr>
+        }
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6" class="text-center p-4">
+            @if (loading) {
+            <div class="flex align-items-center justify-content-center gap-2">
+              <i class="pi pi-spin pi-spinner text-blue-500"></i>
+              <span>Carregando carrinhos...</span>
+            </div>
+            } @else if (error) {
+            <div class="text-red-500">
+              <i class="pi pi-exclamation-triangle text-2xl mb-2"></i>
+              <p>Erro ao carregar carrinhos</p>
+            </div>
+            } @else {
+            <div class="text-gray-500">
+              <i class="pi pi-shopping-cart text-4xl mb-2"></i>
+              <p>Nenhum carrinho encontrado</p>
+            </div>
+            }
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

@@ -26,6 +26,13 @@ export const adminRoutes: Routes = [
         loadComponent: () =>
           import('./users-view/users-view.component').then((m) => m.UsersViewComponent),
       },
+      {
+        path: 'carts',
+        loadComponent: () =>
+          import('./cart-admin-view/cart-admin-view.component').then(
+            (m) => m.CartAdminViewComponent
+          ),
+      },
     ],
   },
 ];
