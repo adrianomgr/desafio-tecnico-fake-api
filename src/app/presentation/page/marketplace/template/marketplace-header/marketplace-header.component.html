@@ -1,0 +1,40 @@
+<p-toolbar styleClass="border-none px-6 bg-white shadow-2">
+  <div class="p-toolbar-group-start">
+    <div class="text-xl font-bold text-primary ml-2">Marketplace</div>
+  </div>
+
+  <div class="p-toolbar-group-end">
+    <div class="flex align-items-center gap-3">
+      <!-- Cart Icon -->
+      <app-cart-icon></app-cart-icon>
+
+      <!-- Navigation Links -->
+      <p-button
+        label="Blog"
+        icon="pi pi-globe"
+        styleClass="p-button-text"
+        (onClick)="goToPublicBlog()"
+        pTooltip="Ir para o Blog"
+        tooltipPosition="bottom"
+      ></p-button>
+
+      <p-button
+        label="Admin"
+        icon="pi pi-cog"
+        styleClass="p-button-text"
+        (onClick)="goToAdmin()"
+        pTooltip="Área Administrativa"
+        tooltipPosition="bottom"
+      ></p-button>
+
+      <p-button
+        label="Login"
+        icon="pi pi-sign-in"
+        styleClass="p-button-outlined"
+        (onClick)="goToLogin()"
+      ></p-button>
+
+      <p-button label="Cadastrar" icon="pi pi-user-plus" (onClick)="goToSignUp()"></p-button>
+    </div>
+  </div>
+</p-toolbar>

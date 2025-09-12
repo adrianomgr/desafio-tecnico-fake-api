@@ -1,0 +1,46 @@
+.marketplace-header {
+  background: white;
+  border-bottom: 1px solid var(--p-surface-border);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+:host ::ng-deep {
+  .p-toolbar {
+    background: white !important;
+    border: none !important;
+    padding: 0.75rem 1.5rem !important;
+
+    .p-toolbar-group-start {
+      .text-xl {
+        color: var(--p-primary-color);
+        font-weight: 700;
+      }
+    }
+
+    .p-toolbar-group-end {
+      .p-button {
+        margin-left: 0.5rem;
+
+        &.p-button-text {
+          color: var(--p-text-color);
+
+          &:hover {
+            background: var(--p-surface-100);
+          }
+        }
+
+        &.p-button-outlined {
+          border-color: var(--p-primary-color);
+          color: var(--p-primary-color);
+
+          &:hover {
+            background: var(--p-primary-color);
+            color: white;
+          }
+        }
+      }
+    }
+  }
+}

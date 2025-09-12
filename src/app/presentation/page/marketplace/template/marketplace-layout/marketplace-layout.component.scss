@@ -1,0 +1,11 @@
+.marketplace-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--p-surface-ground);
+
+  .main-content {
+    flex: 1;
+    background: var(--p-surface-ground);
+  }
+}
