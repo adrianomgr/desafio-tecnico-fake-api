@@ -51,7 +51,7 @@ export class UserFacadeService {
   }
 
   // Deletar usuário
-  deleteUser(id: number): Observable<any> {
+  deleteUser(id: number): Observable<void> {
     return this.userService
       .deleteUser(id)
       .pipe(

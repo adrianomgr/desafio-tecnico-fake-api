@@ -1,0 +1,149 @@
+<p-toast></p-toast>
+
+<div class="product-detail-container">
+  <!-- Loading -->
+  @if (loading) {
+  <div class="flex justify-content-center p-8">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+  }
+
+  <!-- Error -->
+  @if (error) {
+  <div class="p-4">
+    <div class="p-message p-message-error">
+      <span class="p-message-icon pi pi-times-circle"></span>
+      <div class="p-message-text">
+        <p>Erro ao carregar produto. Tente novamente.</p>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Product Details -->
+  @if (product && !loading && !error) {
+  <div class="product-detail-content">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb p-4">
+      <button
+        pButton
+        type="button"
+        icon="pi pi-arrow-left"
+        label="Voltar ao Marketplace"
+        title="Voltar ao Marketplace"
+        class="p-button-text"
+        (click)="goBack()"
+      ></button>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 p-4">
+      <!-- Product Image -->
+      <div class="product-image-section">
+        <div class="image-container">
+          <p-image
+            [src]="product.image"
+            [alt]="product.title"
+            width="100%"
+            height="auto"
+            [preview]="true"
+          ></p-image>
+        </div>
+      </div>
+
+      <!-- Product Info -->
+      <div class="product-info-section">
+        <div class="product-header mb-4">
+          <div class="flex justify-content-between align-items-start mb-3">
+            <h1 class="product-title text-3xl font-bold">{{ product.title }}</h1>
+            <p-tag
+              [value]="product.category | categoryLabel"
+              [severity]="product.category | categorySeverity"
+              class="text-lg"
+            ></p-tag>
+          </div>
+
+          @if (product.rating) {
+          <div class="flex align-items-center gap-3 mb-4">
+            <p-rating [(ngModel)]="product.rating.rate" [readonly]="true" [stars]="5"></p-rating>
+            <span class="text-lg text-gray-600">
+              ({{ product.rating.rate }}/5 - {{ product.rating.count }} avaliações)
+            </span>
+          </div>
+          }
+
+          <div class="price-section mb-4">
+            <span class="product-price text-4xl font-bold text-green-600">
+              {{ product.price | currency : 'USD' : 'symbol' : '1.2-2' }}
+            </span>
+          </div>
+        </div>
+
+        <p-divider></p-divider>
+
+        <div class="product-description mb-6">
+          <h3 class="text-xl font-semibold mb-3">Descrição</h3>
+          <p class="text-gray-700 leading-relaxed">{{ product.description }}</p>
+        </div>
+
+        <p-divider></p-divider>
+
+        <div class="purchase-section">
+          <div class="flex align-items-center gap-4 mb-4">
+            <label for="quantity" class="font-medium">Quantidade:</label>
+            <p-inputNumber
+              id="quantity"
+              [(ngModel)]="quantity"
+              [min]="1"
+              [max]="10"
+              [showButtons]="true"
+              class="w-32"
+            ></p-inputNumber>
+          </div>
+
+          <div class="flex gap-3">
+            <p-button
+              label="Adicionar ao Carrinho"
+              icon="pi pi-shopping-cart"
+              class="flex-1"
+              [loading]="addingToCart"
+              (onClick)="addToCart()"
+            ></p-button>
+            <p-button
+              label="Comprar Agora"
+              icon="pi pi-credit-card"
+              severity="success"
+              class="flex-1"
+              (onClick)="buyNow()"
+            ></p-button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional Product Info -->
+    <div class="additional-info p-4">
+      <p-divider></p-divider>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+        <div class="info-card text-center p-4 border border-gray-200 rounded">
+          <i class="pi pi-truck text-2xl text-blue-500 mb-2"></i>
+          <h4 class="font-semibold mb-1">Frete Grátis</h4>
+          <p class="text-sm text-gray-600">Para compras acima de $50</p>
+        </div>
+
+        <div class="info-card text-center p-4 border border-gray-200 rounded">
+          <i class="pi pi-refresh text-2xl text-green-500 mb-2"></i>
+          <h4 class="font-semibold mb-1">Devolução Fácil</h4>
+          <p class="text-sm text-gray-600">30 dias para trocar ou devolver</p>
+        </div>
+
+        <div class="info-card text-center p-4 border border-gray-200 rounded">
+          <i class="pi pi-shield text-2xl text-purple-500 mb-2"></i>
+          <h4 class="font-semibold mb-1">Compra Segura</h4>
+          <p class="text-sm text-gray-600">Seus dados estão protegidos</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</div>

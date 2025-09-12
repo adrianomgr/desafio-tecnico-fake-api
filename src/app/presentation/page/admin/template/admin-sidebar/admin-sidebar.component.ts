@@ -26,9 +26,9 @@ export class AdminSidebarComponent {
       routerLink: ['/admin/users'],
     },
     {
-      label: 'Meu Perfil',
-      icon: 'pi pi-user',
-      routerLink: ['/admin/profile'],
+      label: 'Carrinhos',
+      icon: 'pi pi-shopping-cart',
+      routerLink: ['/admin/carts'],
     },
     {
       label: 'Marketplace',

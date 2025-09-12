@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -47,7 +47,6 @@ import { CategorySeverityPipe } from '../../../pipe/category-severity.pipe';
   ],
   templateUrl: './product-view.component.html',
   styleUrls: ['./product-view.component.scss'],
-  encapsulation: ViewEncapsulation.None,
 })
 export class ProductViewComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
