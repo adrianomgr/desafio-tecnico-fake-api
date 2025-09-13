@@ -1,0 +1,72 @@
+<div class="public-products">
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title">Todos os Produtos</h1>
+      <p class="page-subtitle">Explore nossa coleção completa de produtos</p>
+    </div>
+
+    <div class="filters-container">
+      <div class="filter-group">
+        <label for="category-select" class="filter-label">Categoria:</label>
+        <p-select
+          id="category-select"
+          [options]="categoryOptions"
+          [(ngModel)]="selectedCategory"
+          (onChange)="onCategoryChange()"
+          placeholder="Todas as categorias"
+          class="filter-select"
+        ></p-select>
+      </div>
+
+      <div class="filter-group">
+        <label for="search-input" class="filter-label">Buscar:</label>
+        <input
+          id="search-input"
+          type="text"
+          pInputText
+          [(ngModel)]="searchTerm"
+          (input)="onSearchChange()"
+          placeholder="Digite para buscar produtos..."
+          class="filter-input"
+        />
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="loading-container">
+      <p-progressSpinner [style]="{ width: '50px', height: '50px' }"></p-progressSpinner>
+      <p class="loading-text">Carregando produtos...</p>
+    </div>
+
+    <div *ngIf="!loading" class="products-grid">
+      <app-product-card
+        *ngFor="let product of displayedProducts; trackBy: trackByProductId"
+        [product]="product"
+        type="products"
+        [showQuantitySelector]="true"
+        [showAddToCart]="true"
+        [pageFrom]="PageFromEnum.PUBLIC_PRODUCTS"
+        (productClick)="viewProduct($event)"
+        class="products-page-card"
+      >
+      </app-product-card>
+    </div>
+
+    <div *ngIf="loadingMore" class="loading-more-container">
+      <p-progressSpinner [style]="{ width: '30px', height: '30px' }"></p-progressSpinner>
+      <p class="loading-more-text">Carregando mais produtos...</p>
+    </div>
+
+    <div
+      *ngIf="!loading && !loadingMore && !hasMoreItems && displayedProducts.length > 0"
+      class="end-results"
+    >
+      <p class="end-results-text">Você visualizou todos os produtos disponíveis</p>
+    </div>
+
+    <div *ngIf="!loading && allFilteredProducts.length === 0" class="empty-state">
+      <i class="pi pi-search empty-icon"></i>
+      <h3 class="empty-title">Nenhum produto encontrado</h3>
+      <p class="empty-description">Tente ajustar os filtros ou fazer uma nova busca.</p>
+    </div>
+  </div>
+</div>

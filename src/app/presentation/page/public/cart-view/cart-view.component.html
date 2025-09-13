@@ -1,7 +1,6 @@
 <p-toast></p-toast>
 
 <div class="cart-container">
-  <!-- Header -->
   <div class="cart-header p-4 border-b">
     <div class="flex justify-content-between align-items-center">
       <h1 class="text-2xl font-bold mb-0">Meu Carrinho</h1>
@@ -14,15 +13,11 @@
     </div>
   </div>
 
-  <!-- Loading -->
   @if (loading) {
   <div class="flex justify-content-center p-8">
     <p-progressSpinner></p-progressSpinner>
   </div>
-  }
-
-  <!-- Error -->
-  @if (error && !loading) {
+  } @if (error && !loading) {
   <div class="p-4">
     <div class="p-message p-message-error">
       <span class="p-message-icon pi pi-times-circle"></span>
@@ -31,10 +26,7 @@
       </div>
     </div>
   </div>
-  }
-
-  <!-- Empty Cart -->
-  @if (cartItems.length === 0 && !loading && !error) {
+  } @if (cartItems.length === 0 && !loading && !error) {
   <div class="empty-cart text-center p-8">
     <i class="pi pi-shopping-cart text-6xl text-gray-400 mb-4"></i>
     <h2 class="text-xl font-semibold mb-2">Seu carrinho está vazio</h2>
@@ -45,13 +37,9 @@
       (onClick)="continueShopping()"
     ></p-button>
   </div>
-  }
-
-  <!-- Cart Items -->
-  @if (cartItems.length > 0 && !loading) {
+  } @if (cartItems.length > 0 && !loading) {
   <div class="cart-content p-4">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-      <!-- Items List -->
       <div class="lg:col-span-2">
         <div class="cart-items">
           <div class="flex justify-content-between align-items-center mb-4">
@@ -69,7 +57,6 @@
           @for (item of cartItems; track item.productId) {
           <p-card class="cart-item mb-3">
             <div class="flex gap-4">
-              <!-- Product Image -->
               <div class="product-image-container">
                 @if (item.product) {
                 <p-image
@@ -90,15 +77,14 @@
                 }
               </div>
 
-              <!-- Product Details -->
               <div class="product-details flex-1">
                 @if (item.product) {
-                <h4
-                  class="product-title font-semibold mb-2 cursor-pointer hover:text-primary"
+                <button
+                  class="product-title font-semibold mb-2 cursor-pointer hover:text-primary bg-transparent border-none text-left p-0"
                   (click)="viewProductDetail(item.productId)"
                 >
                   {{ item.product.title }}
-                </h4>
+                </button>
                 <p class="product-description text-gray-600 text-sm mb-2 line-clamp-2">
                   {{ item.product.description }}
                 </p>
@@ -114,33 +100,26 @@
                 }
               </div>
 
-              <!-- Quantity and Price -->
               <div class="item-controls flex flex-column align-items-end gap-3">
                 @if (item.product) {
                 <div class="price text-xl font-bold text-green-600">
-                  {{ item.product.price | currency : 'USD' : 'symbol' : '1.2-2' }}
+                  {{ item.product.price | currency : 'BRL' : 'symbol' : '1.2-2' }}
                 </div>
                 }
 
                 <div class="quantity-controls flex align-items-center gap-2">
-                  <label class="text-sm font-medium">Qtd:</label>
-                  <p-inputNumber
-                    [(ngModel)]="item.quantity"
-                    [min]="1"
-                    [max]="99"
-                    [showButtons]="true"
-                    buttonLayout="horizontal"
-                    size="small"
-                    [style]="{ width: '120px' }"
-                    [disabled]="updatingItem === item.productId"
-                    (onInput)="updateQuantity(item.productId, toNumber($event.value || 0))"
-                  ></p-inputNumber>
+                  <app-quantity-controls
+                    [quantity]="item.quantity"
+                    [pageFrom]="PageFromEnum.CART_VIEW"
+                    (quantityChange)="updateQuantity(item.productId, $event)"
+                    (removeItem)="removeItem(item.productId)"
+                  ></app-quantity-controls>
                 </div>
 
                 @if (item.product) {
                 <div class="subtotal text-lg font-semibold">
                   Subtotal:
-                  {{ item.product.price * item.quantity | currency : 'USD' : 'symbol' : '1.2-2' }}
+                  {{ item.product.price * item.quantity | currency : 'BRL' : 'symbol' : '1.2-2' }}
                 </div>
                 }
 
@@ -159,7 +138,6 @@
         </div>
       </div>
 
-      <!-- Order Summary -->
       <div class="lg:col-span-1">
         <p-card class="order-summary sticky top-4">
           <ng-template pTemplate="header">
@@ -170,7 +148,7 @@
             <div class="flex justify-content-between mb-3">
               <span>Itens ({{ getCartItemCount() }}):</span>
               <span class="font-semibold">{{
-                getCartTotal() | currency : 'USD' : 'symbol' : '1.2-2'
+                getCartTotal() | currency : 'BRL' : 'symbol' : '1.2-2'
               }}</span>
             </div>
 
@@ -178,7 +156,7 @@
               <span>Frete:</span>
               <span class="text-green-600 font-semibold">
                 @if (getCartTotal() >= 50) { Grátis } @else {
-                {{ 9.99 | currency : 'USD' : 'symbol' : '1.2-2' }}
+                {{ 9.99 | currency : 'BRL' : 'symbol' : '1.2-2' }}
                 }
               </span>
             </div>
@@ -190,7 +168,7 @@
               <span class="text-xl font-bold text-green-600">
                 {{
                   getCartTotal() + (getCartTotal() >= 50 ? 0 : 9.99)
-                    | currency : 'USD' : 'symbol' : '1.2-2'
+                    | currency : 'BRL' : 'symbol' : '1.2-2'
                 }}
               </span>
             </div>
@@ -199,7 +177,7 @@
             <div class="shipping-notice p-3 bg-blue-50 border-left-3 border-blue-500 mb-4">
               <p class="text-sm text-blue-700 mb-0">
                 <i class="pi pi-info-circle mr-2"></i>
-                Adicione {{ 50 - getCartTotal() | currency : 'USD' : 'symbol' : '1.2-2' }}
+                Adicione {{ 50 - getCartTotal() | currency : 'BRL' : 'symbol' : '1.2-2' }}
                 para ganhar frete grátis!
               </p>
             </div>

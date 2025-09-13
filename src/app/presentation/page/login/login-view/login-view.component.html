@@ -40,6 +40,15 @@
         <p-button
           class="block my-4"
           type="button"
+          label="Ir para Loja"
+          severity="secondary"
+          styleClass="w-full"
+          (onClick)="goToStore()"
+          icon="pi pi-shopping-bag"
+        ></p-button>
+        <p-button
+          class="block my-4"
+          type="button"
           label="Ver Credenciais de Login"
           severity="info"
           styleClass="w-full"
@@ -67,7 +76,6 @@
   </p-card>
 </div>
 
-<!-- Dialog de credenciais de teste -->
 <p-dialog
   header="Credenciais de Teste"
   [(visible)]="showTestCredentials"

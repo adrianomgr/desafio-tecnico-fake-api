@@ -7,7 +7,6 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
 import { ImageModule } from 'primeng/image';
-import { InputNumberModule } from 'primeng/inputnumber';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { RatingModule } from 'primeng/rating';
 import { TagModule } from 'primeng/tag';
@@ -16,7 +15,9 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CartFacadeService } from '../../../../abstraction/cart.facade.service';
 import { ProductFacadeService } from '../../../../abstraction/product.facade.service';
+import { PageFromEnum } from '../../../../domain/enum/page-from.enum';
 import { Product } from '../../../../domain/model/product';
+import { QuantityControlsComponent } from '../../../components/quantity-controls/quantity-controls.component';
 import { CategoryLabelPipe } from '../../../pipe/category-label.pipe';
 import { CategorySeverityPipe } from '../../../pipe/category-severity.pipe';
 
@@ -34,9 +35,9 @@ import { CategorySeverityPipe } from '../../../pipe/category-severity.pipe';
     ToastModule,
     ProgressSpinnerModule,
     DividerModule,
-    InputNumberModule,
     CategoryLabelPipe,
     CategorySeverityPipe,
+    QuantityControlsComponent,
   ],
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.scss'],
@@ -47,8 +48,10 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   product: Product | null = null;
   loading = false;
   error: any = null;
-  quantity = 1;
-  addingToCart = false;
+  cartQuantity = 0;
+  isInCart = false;
+
+  readonly PageFromEnum = PageFromEnum;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -61,6 +64,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadProduct();
     this.subscribeToStoreData();
+    this.subscribeToCartData();
   }
 
   ngOnDestroy(): void {
@@ -89,38 +93,25 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  goBack(): void {
-    this.router.navigate(['/marketplace']);
-  }
-
-  addToCart(): void {
-    if (!this.product) return;
-
-    this.addingToCart = true;
-
-    // Add product to local cart
-    this.cartFacade.addToLocalCart(this.product.id, this.quantity);
-
-    // Simulate loading delay for better UX
-    setTimeout(() => {
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Produto Adicionado',
-        detail: `${this.quantity}x ${this.product?.title} adicionado ao carrinho`,
-        life: 3000,
-      });
-      this.addingToCart = false;
-    }, 500);
-  }
-
-  buyNow(): void {
-    if (!this.product) return;
-
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Funcionalidade em Desenvolvimento',
-      detail: 'A funcionalidade de compra direta será implementada em breve',
-      life: 3000,
+  private subscribeToCartData(): void {
+    this.cartFacade.localCartItems$.pipe(takeUntil(this.destroy$)).subscribe((cartItems) => {
+      if (this.product) {
+        const cartItem = cartItems.find((item) => item.productId === this.product!.id);
+        this.isInCart = !!cartItem;
+        this.cartQuantity = cartItem?.quantity || 1;
+      }
     });
+  }
+
+  updateQuantity(newQuantity: number): void {
+    if (this.product) {
+      this.cartFacade.updateLocalCartQuantity(this.product.id, newQuantity);
+    }
+  }
+
+  removeFromCart(): void {
+    if (this.product) {
+      this.cartFacade.removeFromLocalCart(this.product.id);
+    }
   }
 }

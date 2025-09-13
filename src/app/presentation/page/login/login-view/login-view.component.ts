@@ -84,7 +84,7 @@ export class LoginViewComponent implements OnInit, OnDestroy {
       username: username,
       password: password,
     });
-    this.showTestCredentials = false; // Fechar o dialog
+    this.showTestCredentials = false;
 
     this.messageService.add({
       severity: 'info',
@@ -128,5 +128,9 @@ export class LoginViewComponent implements OnInit, OnDestroy {
     Object.keys(this.loginForm.controls).forEach((key) => {
       this.loginForm.get(key)?.markAsTouched();
     });
+  }
+
+  goToStore(): void {
+    this.router.navigate(['/']);
   }
 }

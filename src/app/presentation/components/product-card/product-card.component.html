@@ -1,0 +1,57 @@
+<p-card
+  class="product-card"
+  [class.product-card--home]="type === 'home'"
+  [class.product-card--products]="type === 'products'"
+  (click)="onCardClick()"
+  (keydown.enter)="onCardClick()"
+  tabindex="0"
+>
+  <ng-template pTemplate="header">
+    <div class="product-image-container">
+      <img
+        [src]="product.image"
+        [alt]="product.title"
+        [title]="product.title"
+        class="product-image"
+        loading="lazy"
+      />
+
+      <div *ngIf="showCategory" class="product-category-badge">
+        <p-tag
+          [value]="product.category | categoryLabel"
+          [severity]="product.category | categorySeverity"
+        >
+        </p-tag>
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="product-content">
+    <h3 class="product-title">{{ product.title }}</h3>
+
+    <p *ngIf="showCategory" class="product-description">{{ product.description }}</p>
+
+    <div class="product-rating">
+      <p-rating readonly="true" [ngModel]="product.rating?.rate" [stars]="5"> </p-rating>
+      <span class="rating-count">({{ product.rating?.count }})</span>
+    </div>
+
+    <div class="product-price">
+      <span class="price-value">{{ formatCurrency(product.price) }}</span>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="product-actions">
+      <app-quantity-controls
+        [quantity]="cartQuantity"
+        [isInCart]="isInCart"
+        [showAddToCart]="showAddToCart"
+        [pageFrom]="pageFrom"
+        (quantityChange)="updateQuantity($event)"
+        (removeItem)="removeFromCart()"
+        (addToCart)="onAddToCartWrapper()"
+      ></app-quantity-controls>
+    </div>
+  </ng-template>
+</p-card>

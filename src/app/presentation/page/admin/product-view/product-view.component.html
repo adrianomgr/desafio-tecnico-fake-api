@@ -112,7 +112,6 @@
     </p-table>
   </div>
 
-  <!-- Dialog para criar/editar produto -->
   <p-dialog
     [(visible)]="productDialog"
     [style]="{ width: '600px' }"
@@ -148,8 +147,8 @@
               id="price"
               formControlName="price"
               mode="currency"
-              currency="USD"
-              locale="en-US"
+              currency="BRL"
+              locale="pt-BR"
               class="form-input"
               [class.ng-invalid]="
                 productForm.get('price')?.invalid && productForm.get('price')?.touched

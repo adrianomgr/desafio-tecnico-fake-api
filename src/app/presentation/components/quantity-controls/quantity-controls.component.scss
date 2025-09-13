@@ -1,0 +1,102 @@
+.quantity-controls {
+  width: 100%;
+
+  .quantity-section {
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+    .quantity-buttons {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0.5rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+
+      .quantity-btn {
+        ::ng-deep .p-button {
+          width: 32px;
+          height: 32px;
+          padding: 0;
+          border-radius: 6px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s ease;
+
+          .p-button-icon {
+            font-size: 0.875rem;
+          }
+
+          &:hover:not(:disabled) {
+            transform: scale(1.1);
+          }
+
+          &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+
+            &:hover {
+              transform: none;
+            }
+          }
+        }
+
+        &--minus {
+          ::ng-deep .p-button {
+            &.p-button-danger {
+              background: #dc3545;
+              border-color: #dc3545;
+              color: white;
+
+              &:hover:not(:disabled) {
+                background: #c82333;
+                border-color: #c82333;
+              }
+            }
+
+            &.p-button-secondary {
+              background: #6c757d;
+              border-color: #6c757d;
+              color: white;
+
+              &:hover:not(:disabled) {
+                background: #545b62;
+                border-color: #545b62;
+              }
+            }
+          }
+        }
+
+        &--plus {
+          ::ng-deep .p-button {
+            background: #28a745;
+            border-color: #28a745;
+            color: white;
+
+            &:hover:not(:disabled) {
+              background: #218838;
+              border-color: #218838;
+            }
+          }
+        }
+      }
+
+      .quantity-display {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #2c3e50;
+        flex: 1;
+        text-align: center;
+        background: white;
+        padding: 0.5rem;
+        border-radius: 4px;
+        border: 1px solid #dee2e6;
+        margin: 0 0.5rem;
+      }
+    }
+  }
+}

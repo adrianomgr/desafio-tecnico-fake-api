@@ -4,18 +4,12 @@ import { authGuard } from './infrastructure/guard';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: '/login',
-    pathMatch: 'full',
+    loadChildren: () =>
+      import('./presentation/page/public/public.routes').then((m) => m.publicRoutes),
   },
   {
     path: 'login',
     loadChildren: () => import('./presentation/page/login/login.routes').then((m) => m.loginRoutes),
-  },
-  {
-    path: 'marketplace',
-    canActivate: [authGuard],
-    loadChildren: () =>
-      import('./presentation/page/marketplace/marketplace.routes').then((m) => m.marketplaceRoutes),
   },
   {
     path: 'forbidden',
@@ -31,6 +25,6 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: '/login',
+    redirectTo: '/',
   },
 ];

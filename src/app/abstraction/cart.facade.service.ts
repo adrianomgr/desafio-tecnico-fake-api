@@ -10,7 +10,6 @@ import * as CartSelectors from '../infrastructure/store/cart/cart.selectors';
   providedIn: 'root',
 })
 export class CartFacadeService {
-  // Selectors
   readonly carts$: Observable<Cart[]>;
   readonly currentCart$: Observable<Cart | null>;
   readonly localCartItems$: Observable<CartProduct[]>;
@@ -29,7 +28,6 @@ export class CartFacadeService {
     this.error$ = this.store.select(CartSelectors.selectCartsError);
   }
 
-  // Cart Actions
   loadCarts(): void {
     this.store.dispatch(CartActions.loadCarts());
   }
@@ -80,9 +78,7 @@ export class CartFacadeService {
     this.store.dispatch(CartActions.setCurrentCart({ cart }));
   }
 
-  // Helper method to save local cart to server
   saveLocalCartToServer(userId: number): void {
-    // This will be handled by effects - dispatching the local cart items to create a new cart
     this.store.dispatch(CartActions.saveLocalCartToServer({ userId }));
   }
 }

@@ -24,7 +24,6 @@
   letter-spacing: 0.5px;
 }
 
-// Estilos para o dialog de credenciais de teste
 :host ::ng-deep .p-dialog {
   .p-dialog-header {
     background: var(--p-primary-50);
@@ -77,7 +76,6 @@
   }
 }
 
-// Estilo para o código da senha
 code {
   font-family: 'Courier New', Courier, monospace;
   font-weight: 600;

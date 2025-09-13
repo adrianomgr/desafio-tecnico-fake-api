@@ -1,0 +1,82 @@
+<p-toast></p-toast>
+
+<div class="product-detail-container">
+  @if (loading) {
+  <div class="flex justify-content-center p-8">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+  } @if (error) {
+  <div class="p-4">
+    <div class="p-message p-message-error">
+      <span class="p-message-icon pi pi-times-circle"></span>
+      <div class="p-message-text">
+        <p>Erro ao carregar produto. Tente novamente.</p>
+      </div>
+    </div>
+  </div>
+  } @if (product && !loading && !error) {
+  <div class="product-detail-content">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 p-4">
+      <div class="product-image-section">
+        <div class="image-container">
+          <p-image
+            [src]="product.image"
+            [alt]="product.title"
+            width="100%"
+            height="auto"
+            [preview]="true"
+          ></p-image>
+        </div>
+      </div>
+
+      <div class="product-info-section">
+        <div class="product-header mb-4">
+          <div class="flex justify-content-between align-items-start mb-3">
+            <h1 class="product-title text-3xl font-bold">{{ product.title }}</h1>
+            <p-tag
+              [value]="product.category | categoryLabel"
+              [severity]="product.category | categorySeverity"
+              class="text-lg"
+            ></p-tag>
+          </div>
+
+          @if (product.rating) {
+          <div class="flex align-items-center gap-3 mb-4">
+            <p-rating [(ngModel)]="product.rating.rate" [readonly]="true" [stars]="5"></p-rating>
+            <span class="text-lg text-gray-600">
+              ({{ product.rating.rate }}/5 - {{ product.rating.count }} avaliações)
+            </span>
+          </div>
+          }
+
+          <div class="price-section mb-4">
+            <span class="product-price text-4xl font-bold text-green-600">
+              {{ product.price | currency : 'BRL' : 'symbol' : '1.2-2' }}
+            </span>
+          </div>
+        </div>
+
+        <p-divider></p-divider>
+
+        <div class="product-description mb-6">
+          <h3 class="text-xl font-semibold mb-3">Descrição</h3>
+          <p class="text-gray-700 leading-relaxed">{{ product.description }}</p>
+        </div>
+
+        <p-divider></p-divider>
+
+        <div class="quantity-controls-section">
+          <h3 class="text-xl font-semibold mb-3">Adicionar ao Carrinho</h3>
+          <app-quantity-controls
+            [quantity]="cartQuantity"
+            [isInCart]="isInCart"
+            [pageFrom]="PageFromEnum.PRODUCT_DETAIL"
+            (quantityChange)="updateQuantity($event)"
+            (removeItem)="removeFromCart()"
+          ></app-quantity-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</div>

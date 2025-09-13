@@ -1,17 +1,22 @@
 import { Routes } from '@angular/router';
 
-export const marketplaceRoutes: Routes = [
+export const publicRoutes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./template/marketplace-layout/marketplace-layout.component').then(
-        (m) => m.MarketplaceLayoutComponent
-      ),
+      import('./public-layout/public-layout.component').then((m) => m.PublicLayoutComponent),
     children: [
       {
         path: '',
         loadComponent: () =>
-          import('./marketplace-view.component').then((m) => m.MarketplaceViewComponent),
+          import('./public-home-view/public-home.component').then((m) => m.PublicHomeComponent),
+      },
+      {
+        path: 'products',
+        loadComponent: () =>
+          import('./public-products/public-products.component').then(
+            (m) => m.PublicProductsComponent
+          ),
       },
       {
         path: 'product/:id',

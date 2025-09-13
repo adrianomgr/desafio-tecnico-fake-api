@@ -113,7 +113,6 @@ export class UsersViewComponent implements OnInit {
       confirmPassword: '',
     });
 
-    // Remover validação obrigatória das senhas para edição
     this.userForm.get('password')?.clearValidators();
     this.userForm.get('password')?.updateValueAndValidity();
     this.userForm.get('confirmPassword')?.clearValidators();
@@ -161,7 +160,6 @@ export class UsersViewComponent implements OnInit {
     this.isEditMode = false;
     this.userForm.reset();
 
-    // Reestabelecer validações para criação
     this.userForm.get('password')?.setValidators([Validators.required]);
     this.userForm.get('password')?.updateValueAndValidity();
     this.userForm.get('confirmPassword')?.setValidators([Validators.required]);
@@ -175,7 +173,6 @@ export class UsersViewComponent implements OnInit {
       const formValue = this.userForm.value;
 
       if (this.isEditMode && this.selectedUser) {
-        // Editar usuário existente
         const updateRequest = new UpdateUserRequest({
           id: this.selectedUser.id,
           username: formValue.username,
@@ -203,7 +200,6 @@ export class UsersViewComponent implements OnInit {
           },
         });
       } else {
-        // Criar novo usuário
         const createRequest = new CreateUserRequest({
           username: formValue.username,
           email: formValue.email,

@@ -1,0 +1,89 @@
+<div class="public-home">
+  <section class="hero-section">
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="hero-title">Bem-vindo ao FakeStore</h1>
+        <p class="hero-subtitle">Descubra os melhores produtos com preços incríveis.</p>
+        <div class="hero-actions">
+          <p-button
+            label="Ver Todos os Produtos"
+            icon="pi pi-arrow-right"
+            class="hero-btn"
+            (click)="goToProducts()"
+          ></p-button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="categories-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Explore por Categoria</h2>
+        <p class="section-subtitle">Encontre produtos organizados por categorias</p>
+      </div>
+
+      <div *ngIf="loading" class="loading-container">
+        <p-progressSpinner [style]="{ width: '50px', height: '50px' }"></p-progressSpinner>
+        <p class="loading-text">Carregando categorias...</p>
+      </div>
+
+      <div *ngIf="!loading && categoriesWithProducts.length > 0" class="categories-carousel">
+        <p-carousel
+          #carousel
+          [value]="categoriesWithProducts"
+          [numVisible]="1"
+          [numScroll]="1"
+          [circular]="true"
+          [autoplayInterval]="0"
+          [showIndicators]="true"
+          [showNavigators]="true"
+          class="custom-carousel"
+          [class.paused]="isCarouselPaused"
+          (mouseenter)="onCarouselMouseEnter()"
+          (mouseleave)="onCarouselMouseLeave()"
+        >
+          <ng-template pTemplate="item" let-categoryData>
+            <div class="category-slide">
+              <div class="category-header">
+                <h3 class="category-title">{{ categoryData.category | categoryLabel }}</h3>
+                <p-tag
+                  [value]="categoryData.category | categoryLabel"
+                  [severity]="categoryData.category | categorySeverity"
+                  class="category-badge"
+                >
+                </p-tag>
+              </div>
+
+              <div class="products-grid">
+                <app-product-card
+                  *ngFor="let product of categoryData.products; trackBy: trackByProductId"
+                  [product]="product"
+                  type="home"
+                  [showQuantitySelector]="true"
+                  [showAddToCart]="true"
+                  [pageFrom]="PageFromEnum.HOME"
+                  (productClick)="viewProduct($event)"
+                  class="carousel-product-card"
+                >
+                </app-product-card>
+              </div>
+
+              <div class="category-actions">
+                <p-button
+                  label="Ver Todos os Produtos desta Categoria"
+                  icon="pi pi-arrow-right"
+                  severity="secondary"
+                  (click)="goToProducts(categoryData.category)"
+                  (keydown.enter)="goToProducts(categoryData.category)"
+                  class="view-category-btn"
+                >
+                </p-button>
+              </div>
+            </div>
+          </ng-template>
+        </p-carousel>
+      </div>
+    </div>
+  </section>
+</div>

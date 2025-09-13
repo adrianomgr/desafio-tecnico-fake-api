@@ -6,7 +6,6 @@ import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ImageModule } from 'primeng/image';
-import { InputNumberModule } from 'primeng/inputnumber';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
@@ -14,8 +13,10 @@ import { combineLatest, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CartFacadeService } from '../../../../abstraction/cart.facade.service';
 import { ProductFacadeService } from '../../../../abstraction/product.facade.service';
+import { PageFromEnum } from '../../../../domain/enum/page-from.enum';
 import { CartProduct } from '../../../../domain/model/cart';
 import { Product } from '../../../../domain/model/product';
+import { QuantityControlsComponent } from '../../../components/quantity-controls/quantity-controls.component';
 import { CategoryLabelPipe } from '../../../pipe/category-label.pipe';
 import { CategorySeverityPipe } from '../../../pipe/category-severity.pipe';
 
@@ -32,12 +33,12 @@ interface CartItemWithProduct extends CartProduct {
     ButtonModule,
     CardModule,
     ImageModule,
-    InputNumberModule,
     ProgressSpinnerModule,
     TagModule,
     ToastModule,
     CategoryLabelPipe,
     CategorySeverityPipe,
+    QuantityControlsComponent,
   ],
   templateUrl: './cart-view.component.html',
   styleUrls: ['./cart-view.component.scss'],
@@ -48,6 +49,8 @@ export class CartViewComponent implements OnInit, OnDestroy {
   cartItems: CartItemWithProduct[] = [];
   loading = false;
   error: any = null;
+
+  readonly PageFromEnum = PageFromEnum;
   updatingItem: number | null = null;
 
   constructor(
@@ -59,8 +62,8 @@ export class CartViewComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscribeToCartData();
-    // Load carts from server to test the endpoint
-    this.cartFacade.loadCarts();
+
+    // this.cartFacade.loadCarts();
   }
 
   ngOnDestroy(): void {
@@ -69,7 +72,6 @@ export class CartViewComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToCartData(): void {
-    // Combine local cart items with product data
     combineLatest([
       this.cartFacade.localCartItems$,
       this.productFacade.products$,
@@ -81,14 +83,12 @@ export class CartViewComponent implements OnInit, OnDestroy {
         this.loading = loading;
         this.error = error;
 
-        // Map cart items to include product data
         this.cartItems = cartItems.map((cartItem) => ({
           ...cartItem,
           product: products.find((product) => product.id === cartItem.productId) || null,
         }));
       });
 
-    // Load products if not already loaded
     this.productFacade.loadProducts();
   }
 
@@ -101,7 +101,6 @@ export class CartViewComponent implements OnInit, OnDestroy {
     this.updatingItem = productId;
     this.cartFacade.updateLocalCartQuantity(productId, quantity);
 
-    // Reset updating state after a brief delay
     setTimeout(() => {
       this.updatingItem = null;
     }, 300);
@@ -109,7 +108,7 @@ export class CartViewComponent implements OnInit, OnDestroy {
 
   removeItem(productId: number): void {
     const item = this.cartItems.find((item) => item.productId === productId);
-    if (item && item.product) {
+    if (item?.product) {
       this.cartFacade.removeFromLocalCart(productId);
       this.messageService.add({
         severity: 'info',
@@ -150,11 +149,11 @@ export class CartViewComponent implements OnInit, OnDestroy {
   }
 
   continueShopping(): void {
-    this.router.navigate(['/marketplace']);
+    this.router.navigate(['/products']);
   }
 
   viewProductDetail(productId: number): void {
-    this.router.navigate(['/marketplace/product', productId]);
+    this.router.navigate(['/product', productId]);
   }
 
   getCartTotal(): number {
@@ -167,7 +166,6 @@ export class CartViewComponent implements OnInit, OnDestroy {
     return this.cartItems.reduce((count, item) => count + item.quantity, 0);
   }
 
-  // Helper method for template to convert string to number
   toNumber(value: string | number): number {
     return typeof value === 'string' ? Number(value) : value;
   }

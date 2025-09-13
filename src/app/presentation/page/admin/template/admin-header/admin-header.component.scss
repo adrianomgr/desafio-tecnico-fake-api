@@ -1,4 +1,3 @@
-// Estilos específicos para o header admin
 :host {
   .p-toolbar {
     position: sticky;
@@ -18,7 +17,6 @@
     }
   }
 
-  // Badge customizado para notificações
   .p-badge {
     min-width: 1.2rem;
     height: 1.2rem;
@@ -26,7 +24,6 @@
     font-size: 0.75rem;
   }
 
-  // Avatar do usuário
   .p-avatar {
     cursor: pointer;
     transition: all 0.2s ease;

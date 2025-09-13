@@ -1,4 +1,3 @@
-// Estilos específicos do product-view
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -11,7 +10,6 @@
   vertical-align: top;
 }
 
-// Estilos para o dialog de edição/criação de produtos
 :host ::ng-deep .admin-dialog {
   .p-dialog-header {
     background: var(--surface-50);
@@ -61,13 +59,11 @@
   }
 }
 
-// Estilos para textarea
 :host ::ng-deep .p-inputtextarea {
   resize: vertical;
   min-height: 120px;
 }
 
-// Botões do footer do dialog
 .dialog-footer {
   display: flex;
   justify-content: flex-end;

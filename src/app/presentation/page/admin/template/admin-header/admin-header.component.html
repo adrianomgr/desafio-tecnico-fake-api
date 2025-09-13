@@ -1,10 +1,9 @@
 <p-toolbar styleClass="border-none px-6 bg-white shadow-2">
   <div class="p-toolbar-group-start">
-    <div class="text-xl font-bold text-primary ml-2">Marketplace Admin</div>
+    <div class="text-xl font-bold text-primary ml-2">Loja Admin</div>
   </div>
 
   <div class="p-toolbar-group-end">
-    <!-- Informações do Usuário -->
     <div class="flex align-items-center gap-2">
       <p-avatar
         [label]="currentUserName | userInitials"
@@ -18,7 +17,6 @@
         <div class="text-xs text-600">{{ currentUserEmail }}</div>
       </div>
 
-      <!-- Menu do usuário -->
       <p-button
         icon="pi pi-sign-out"
         styleClass="p-button-text p-button-plain logout-button"
@@ -33,7 +31,6 @@
   </div>
 </p-toolbar>
 
-<!-- Dialog de confirmação -->
 <p-confirmDialog
   [style]="{ width: '450px' }"
   [baseZIndex]="10000"

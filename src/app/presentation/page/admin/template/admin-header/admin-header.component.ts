@@ -36,7 +36,6 @@ export class AdminHeaderComponent implements OnDestroy {
     private readonly headerFacade: HeaderFacadeService,
     private readonly confirmationService: ConfirmationService
   ) {
-    // Effect para reagir às mudanças do resource getProfile
     effect(() => {
       const profileResource = this.headerFacade.getProfile;
 

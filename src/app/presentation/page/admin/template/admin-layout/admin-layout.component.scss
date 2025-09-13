@@ -23,7 +23,6 @@
       overflow-y: auto;
       background: var(--p-surface-ground);
 
-      // Layout específico do admin-layout
       .admin-page {
         max-width: 1400px;
         margin: 0 auto;
@@ -43,7 +42,6 @@
         flex-direction: column;
       }
 
-      // Responsividade específica do layout
       @media (max-width: 768px) {
         .main-content-card {
           padding: 20px;
@@ -55,7 +53,6 @@
   }
 }
 
-// Responsividade do sidebar
 @media (max-width: 768px) {
   .admin-layout {
     .sidebar {

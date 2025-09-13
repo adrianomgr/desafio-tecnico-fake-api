@@ -1,0 +1,46 @@
+<div class="quantity-controls">
+  <div
+    *ngIf="showAddToCart && !isInCart && pageFrom !== PageFromEnum.CART_VIEW"
+    class="add-to-cart-section"
+  >
+    <p-button
+      [label]="addToCartButtonLabel"
+      icon="pi pi-shopping-cart"
+      class="add-to-cart-btn"
+      styleClass="w-full"
+      (click)="onAddToCart($event)"
+      (keydown.enter)="onAddToCart($event)"
+    ></p-button>
+  </div>
+
+  <div
+    *ngIf="(showAddToCart && isInCart) || pageFrom === PageFromEnum.CART_VIEW"
+    class="quantity-section"
+  >
+    <div class="quantity-buttons">
+      <p-button
+        [icon]="quantity <= 1 ? 'pi pi-trash' : 'pi pi-minus'"
+        class="quantity-btn quantity-btn--minus"
+        size="small"
+        (click)="decreaseQuantity($event)"
+        (keydown.enter)="decreaseQuantity($event)"
+        (keydown.space)="decreaseQuantity($event)"
+        [severity]="'danger'"
+        [pTooltip]="quantity <= 1 ? 'Remover do carrinho' : 'Diminuir quantidade'"
+      ></p-button>
+
+      <span class="quantity-display">{{ quantity }}</span>
+
+      <p-button
+        icon="pi pi-plus"
+        class="quantity-btn quantity-btn--plus"
+        size="small"
+        severity="success"
+        (click)="increaseQuantity($event)"
+        (keydown.enter)="increaseQuantity($event)"
+        (keydown.space)="increaseQuantity($event)"
+        pTooltip="Aumentar quantidade"
+      ></p-button>
+    </div>
+  </div>
+</div>

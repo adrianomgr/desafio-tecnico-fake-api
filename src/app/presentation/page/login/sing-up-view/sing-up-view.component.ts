@@ -70,7 +70,6 @@ export class SingUpViewComponent implements CanComponentDeactivate {
       return true;
     }
 
-    // Se há alterações não salvas, mostra dialog de confirmação
     return new Promise((resolve) => {
       this.confirmationService.confirm({
         message: 'Você tem alterações não salvas. Tem certeza de que deseja sair desta página?',
@@ -100,7 +99,7 @@ export class SingUpViewComponent implements CanComponentDeactivate {
 
       this.signUpFacade.createUser(createUser).subscribe(() => {
         this.isLoading = false;
-        this.formSubmitted = true; // Marca que o formulário foi enviado com sucesso
+        this.formSubmitted = true;
         this.messageService.add({
           severity: 'success',
           summary: 'Sucesso',

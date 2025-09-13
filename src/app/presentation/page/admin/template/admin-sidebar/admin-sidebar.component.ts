@@ -31,9 +31,9 @@ export class AdminSidebarComponent {
       routerLink: ['/admin/carts'],
     },
     {
-      label: 'Marketplace',
+      label: 'Ver Loja',
       icon: 'pi pi-external-link',
-      routerLink: ['/marketplace'],
+      routerLink: ['/'],
     },
   ];
 }

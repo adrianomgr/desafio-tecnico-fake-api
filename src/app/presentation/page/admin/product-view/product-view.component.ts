@@ -200,7 +200,6 @@ export class ProductViewComponent implements OnInit, OnDestroy {
 
     try {
       if (this.selectedProduct) {
-        // Update existing product
         const productUpdate: ProductUpdate = {
           id: this.selectedProduct.id,
           ...formValue,
@@ -214,7 +213,6 @@ export class ProductViewComponent implements OnInit, OnDestroy {
           life: 3000,
         });
       } else {
-        // Create new product
         const productCreate: ProductCreate = formValue;
         this.productFacade.createProduct(productCreate);
 
