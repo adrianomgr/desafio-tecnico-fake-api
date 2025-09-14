@@ -85,6 +85,7 @@
   flex-direction: column;
 
   .product-title {
+    min-height: 45px;
     font-size: 1.1rem;
     font-weight: 600;
     color: #2c3e50;
@@ -98,6 +99,7 @@
   }
 
   .product-description {
+    min-height: 65px;
     font-size: 0.9rem;
     color: #7f8c8d;
     line-height: 1.5;

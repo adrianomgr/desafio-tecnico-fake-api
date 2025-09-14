@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { Constants } from '@app/constants';
 import { CategoryEnum } from '@app/domain/enum/category.enum';
 
 @Pipe({
@@ -7,17 +8,6 @@ import { CategoryEnum } from '@app/domain/enum/category.enum';
 })
 export class CategorySeverityPipe implements PipeTransform {
   transform(category: string): string {
-    switch (category as CategoryEnum) {
-      case CategoryEnum.ELECTRONICS:
-        return 'info';
-      case CategoryEnum.JEWELERY:
-        return 'warning';
-      case CategoryEnum.MENS_CLOTHING:
-        return 'success';
-      case CategoryEnum.WOMENS_CLOTHING:
-        return 'danger';
-      default:
-        return 'info';
-    }
+    return Constants.categorySeverity[category as CategoryEnum] || 'info';
   }
 }
