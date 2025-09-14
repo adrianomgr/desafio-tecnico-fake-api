@@ -1,12 +1,12 @@
 <div class="public-products">
   <div class="container">
-    <div class="page-header">
-      <h1 class="page-title">Todos os Produtos</h1>
-      <p class="page-subtitle">Explore nossa coleção completa de produtos</p>
+    <div class="section-header">
+      <h1 class="section-title">Todos os Produtos</h1>
+      <p class="section-subtitle">Explore nossa coleção completa de produtos</p>
     </div>
 
     <div class="filters-container">
-      <div class="filter-group">
+      <div>
         <label for="category-select" class="filter-label">Categoria:</label>
         <p-select
           id="category-select"
@@ -18,7 +18,7 @@
         ></p-select>
       </div>
 
-      <div class="filter-group">
+      <div>
         <label for="search-input" class="filter-label">Buscar:</label>
         <input
           id="search-input"
@@ -32,41 +32,31 @@
       </div>
     </div>
 
-    <div *ngIf="loading" class="loading-container">
-      <p-progressSpinner [style]="{ width: '50px', height: '50px' }"></p-progressSpinner>
-      <p class="loading-text">Carregando produtos...</p>
-    </div>
-
-    <div *ngIf="!loading" class="products-grid">
+    @if (!loading) {
+    <div class="products-grid">
+      @for (product of displayedProducts; track product.id) {
       <app-product-card
-        *ngFor="let product of displayedProducts; trackBy: trackByProductId"
         [product]="product"
         type="products"
         [showQuantitySelector]="true"
         [showAddToCart]="true"
         [pageFrom]="PageFromEnum.PUBLIC_PRODUCTS"
         (productClick)="viewProduct($event)"
-        class="products-page-card"
       >
       </app-product-card>
+      }
     </div>
-
-    <div *ngIf="loadingMore" class="loading-more-container">
-      <p-progressSpinner [style]="{ width: '30px', height: '30px' }"></p-progressSpinner>
-      <p class="loading-more-text">Carregando mais produtos...</p>
+    } @if (loading || loadingMore) {
+    <div class="loading-container">
+      <p-progressSpinner [style]="{ width: '50px', height: '50px' }"></p-progressSpinner>
+      <p class="loading-text">Carregando produtos...</p>
     </div>
-
-    <div
-      *ngIf="!loading && !loadingMore && !hasMoreItems && displayedProducts.length > 0"
-      class="end-results"
-    >
-      <p class="end-results-text">Você visualizou todos os produtos disponíveis</p>
+    } @if (!loading && !loadingMore && !hasMoreItems && displayedProducts.length > 0) {
+    <div class="flex justify-center">
+      <p-message severity="secondary" variant="outlined"
+        >Você visualizou todos os produtos disponíveis</p-message
+      >
     </div>
-
-    <div *ngIf="!loading && allFilteredProducts.length === 0" class="empty-state">
-      <i class="pi pi-search empty-icon"></i>
-      <h3 class="empty-title">Nenhum produto encontrado</h3>
-      <p class="empty-description">Tente ajustar os filtros ou fazer uma nova busca.</p>
-    </div>
+    }
   </div>
 </div>

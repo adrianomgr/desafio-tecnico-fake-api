@@ -2,13 +2,16 @@
   <section class="hero-section">
     <div class="container">
       <div class="hero-content">
-        <h1 class="hero-title">Bem-vindo ao FakeStore</h1>
+        <h1 class="hero-title">Bem-vindo</h1>
         <p class="hero-subtitle">Descubra os melhores produtos com preços incríveis.</p>
         <div class="hero-actions">
           <p-button
+            onKeyPress
             label="Ver Todos os Produtos"
             icon="pi pi-arrow-right"
             class="hero-btn"
+            severity="secondary"
+            size="large"
             (click)="goToProducts()"
           ></p-button>
         </div>
@@ -23,12 +26,13 @@
         <p class="section-subtitle">Encontre produtos organizados por categorias</p>
       </div>
 
-      <div *ngIf="loading" class="loading-container">
+      @if (loading) {
+      <div class="loading-container">
         <p-progressSpinner [style]="{ width: '50px', height: '50px' }"></p-progressSpinner>
         <p class="loading-text">Carregando categorias...</p>
       </div>
-
-      <div *ngIf="!loading && categoriesWithProducts.length > 0" class="categories-carousel">
+      } @if (!loading && categoriesWithProducts.length > 0) {
+      <div class="categories-carousel">
         <p-carousel
           #carousel
           [value]="categoriesWithProducts"
@@ -56,8 +60,8 @@
               </div>
 
               <div class="products-grid">
+                @for (product of categoryData.products; track product.id) {
                 <app-product-card
-                  *ngFor="let product of categoryData.products; trackBy: trackByProductId"
                   [product]="product"
                   type="home"
                   [showQuantitySelector]="true"
@@ -67,16 +71,17 @@
                   class="carousel-product-card"
                 >
                 </app-product-card>
+                }
               </div>
 
-              <div class="category-actions">
+              <div class="text-center">
                 <p-button
                   label="Ver Todos os Produtos desta Categoria"
                   icon="pi pi-arrow-right"
-                  severity="secondary"
+                  severity="contrast"
+                  size="large"
                   (click)="goToProducts(categoryData.category)"
                   (keydown.enter)="goToProducts(categoryData.category)"
-                  class="view-category-btn"
                 >
                 </p-button>
               </div>
@@ -84,6 +89,7 @@
           </ng-template>
         </p-carousel>
       </div>
+      }
     </div>
   </section>
 </div>

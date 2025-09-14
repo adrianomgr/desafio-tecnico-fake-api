@@ -2,17 +2,15 @@
   <header class="public-header fixed-header">
     <div class="container">
       <div class="header-content">
-        <div
+        <button
+          onKeyPress
           class="logo"
           (click)="goToHome()"
-          (keydown.enter)="goToHome()"
-          tabindex="0"
-          role="button"
           aria-label="Ir para página inicial"
           title="Ir para página inicial"
         >
           <i class="pi pi-shopping-bag logo-icon"></i>
-        </div>
+        </button>
 
         <nav class="main-nav">
           <p-menubar [model]="menuItems" class="custom-menubar"></p-menubar>
@@ -26,11 +24,13 @@
             title="Carrinho"
           >
             <i class="pi pi-shopping-cart cart-icon"></i>
-            <span class="cart-count" *ngIf="cartItemCount > 0">{{ cartItemCount }}</span>
+            @if (cartItemCount > 0) {
+            <span class="cart-count">{{ cartItemCount }}</span>
+            }
           </button>
 
+          @if (!isAuthenticated) {
           <p-button
-            *ngIf="!isAuthenticated"
             type="button"
             severity="secondary"
             (click)="goToLogin()"
@@ -39,9 +39,8 @@
             label="Entrar"
           >
           </p-button>
-
+          } @else {
           <p-button
-            *ngIf="isAuthenticated"
             type="button"
             severity="secondary"
             (click)="goToAdmin()"
@@ -50,6 +49,7 @@
             label="Admin"
           >
           </p-button>
+          }
         </div>
       </div>
     </div>

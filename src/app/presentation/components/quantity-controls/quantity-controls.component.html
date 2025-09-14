@@ -1,8 +1,6 @@
 <div class="quantity-controls">
-  <div
-    *ngIf="showAddToCart && !isInCart && pageFrom !== PageFromEnum.CART_VIEW"
-    class="add-to-cart-section"
-  >
+  @if (showAddToCart && !isInCart && pageFrom !== PageFromEnum.CART_VIEW) {
+  <div class="add-to-cart-section">
     <p-button
       [label]="addToCartButtonLabel"
       icon="pi pi-shopping-cart"
@@ -12,11 +10,8 @@
       (keydown.enter)="onAddToCart($event)"
     ></p-button>
   </div>
-
-  <div
-    *ngIf="(showAddToCart && isInCart) || pageFrom === PageFromEnum.CART_VIEW"
-    class="quantity-section"
-  >
+  } @if ((showAddToCart && isInCart) || pageFrom === PageFromEnum.CART_VIEW) {
+  <div class="quantity-section">
     <div class="quantity-buttons">
       <p-button
         [icon]="quantity <= 1 ? 'pi pi-trash' : 'pi pi-minus'"
@@ -43,4 +38,5 @@
       ></p-button>
     </div>
   </div>
+  }
 </div>

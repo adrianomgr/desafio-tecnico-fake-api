@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -13,7 +13,8 @@ import { AuthApiService } from '../../../../infrastructure/api/auth.api.service'
   standalone: true,
   imports: [CommonModule, RouterOutlet, ButtonModule, MenubarModule],
   templateUrl: './public-layout.component.html',
-  styleUrl: './public-layout.component.scss',
+  styleUrls: ['./public-layout.component.scss', './styles-public.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class PublicLayoutComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);

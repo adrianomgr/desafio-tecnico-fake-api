@@ -16,20 +16,24 @@
         loading="lazy"
       />
 
-      <div *ngIf="showCategory" class="product-category-badge">
+      @if (showCategory) {
+      <div class="product-category-badge">
         <p-tag
           [value]="product.category | categoryLabel"
           [severity]="product.category | categorySeverity"
         >
         </p-tag>
       </div>
+      }
     </div>
   </ng-template>
 
   <div class="product-content">
     <h3 class="product-title">{{ product.title }}</h3>
 
-    <p *ngIf="showCategory" class="product-description">{{ product.description }}</p>
+    @if (showCategory) {
+    <p class="product-description">{{ product.description }}</p>
+    }
 
     <div class="product-rating">
       <p-rating readonly="true" [ngModel]="product.rating?.rate" [stars]="5"> </p-rating>

@@ -114,4 +114,14 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
       this.cartFacade.removeFromLocalCart(this.product.id);
     }
   }
+
+  addToCart(): void {
+    if (this.product) {
+      this.cartFacade.addToLocalCart(this.product.id, this.cartQuantity);
+    }
+  }
+
+  goToCart(): void {
+    this.router.navigate(['/cart']);
+  }
 }

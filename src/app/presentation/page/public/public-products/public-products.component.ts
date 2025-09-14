@@ -3,6 +3,7 @@ import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
+import { MessageModule } from 'primeng/message';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SelectModule } from 'primeng/select';
 import { Subject } from 'rxjs';
@@ -23,6 +24,7 @@ import { CategoryLabelPipe } from '../../../pipe/category-label.pipe';
     InputTextModule,
     ProgressSpinnerModule,
     ProductCardComponent,
+    MessageModule,
   ],
   templateUrl: './public-products.component.html',
   styleUrls: ['./public-products.component.scss'],

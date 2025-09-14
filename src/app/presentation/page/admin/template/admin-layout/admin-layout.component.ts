@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AdminHeaderComponent } from '../admin-header/admin-header.component';
 import { AdminSidebarComponent } from '../admin-sidebar/admin-sidebar.component';
@@ -7,6 +7,7 @@ import { AdminSidebarComponent } from '../admin-sidebar/admin-sidebar.component'
   selector: 'app-admin-layout',
   imports: [RouterOutlet, AdminHeaderComponent, AdminSidebarComponent],
   templateUrl: './admin-layout.component.html',
-  styleUrl: './admin-layout.component.scss',
+  styleUrls: ['./admin-layout.component.scss', '../styles-admin.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class AdminLayoutComponent {}
