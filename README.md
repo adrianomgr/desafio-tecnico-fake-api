@@ -15,6 +15,26 @@ Este é um projeto desenvolvido em Angular 20, que utiliza as melhores práticas
 - **JWT** - Autenticação e autorização
 - **Fake Store API** - API externa para dados
 
+## ⚡ Funcionalidades Modernas Angular 18+
+
+### 🔄 Signals & Resource API
+
+- **WritableSignal**: Estado reativo para ID do usuário atual
+- **Resource API**: Carregamento automático e reativo de dados
+- **Signal-based reactivity**: Performance otimizada com detecção de mudanças granular
+
+### 🎯 Standalone Components
+
+- **Arquitetura moderna**: Todos os componentes são standalone
+- **Imports explícitos**: Melhor tree-shaking e performance
+- **Modularity**: Componentes completamente independentes
+
+### 🚀 Reactive Patterns
+
+- **Automatic reloading**: Resource reage automaticamente a mudanças nos signals
+- **Async resource loading**: Carregamento assíncrono com `firstValueFrom`
+- **Signal-driven UI**: Interface reativa baseada em signals
+
 ## 🏗️ Arquitetura e Padrões Implementados
 
 ### 📁 Estrutura de Arquivos Organizada
@@ -77,6 +97,47 @@ Implementação do padrão Facade para abstrair a complexidade:
 #### Interceptors
 
 - **AuthInterceptor**: Interceptação automática para adicionar tokens JWT
+
+#### Controle de Sessão Avançado
+
+**Gerenciamento de Token JWT:**
+
+- **LocalStorage**: Persistência segura do token de autenticação
+- **Auto-inicialização**: Verificação automática de token válido na inicialização
+- **Expiração**: Validação de expiração usando JWT Helper Service
+- **Logout automático**: Limpeza automática em caso de token inválido
+
+**Resource com Signals (Angular 20):**
+
+```typescript
+getProfile: ResourceRef<User | undefined> = resource({
+  params: () => ({ id: this.idcurrentUser() }),
+  loader: async ({ params }) => {
+    if (params.id) {
+      return await firstValueFrom(
+        this.getUserById(params.id).pipe(map((fakeUser) => new User(fakeUser)))
+      );
+    }
+    return undefined;
+  },
+});
+```
+
+**Características do Sistema de Sessão:**
+
+- **Reactive Session**: Signal `idcurrentUser` monitora mudanças de usuário
+- **Auto-reload**: Resource recarrega automaticamente quando `idcurrentUser` muda
+- **BehaviorSubject**: Stream reativo para estado de autenticação
+- **Token Decode**: Extração segura de dados do payload JWT
+- **Persistência**: Manutenção de sessão entre recarregamentos da página
+
+**Fluxo de Autenticação:**
+
+1. **Login**: Token armazenado no localStorage
+2. **Decode**: Extração do ID do usuário do token
+3. **Signal Update**: Atualização do signal `idcurrentUser`
+4. **Resource Trigger**: Recarregamento automático do perfil
+5. **State Management**: Atualização do estado de autenticação
 
 ### 📝 Validações de Formulário Avançadas
 
