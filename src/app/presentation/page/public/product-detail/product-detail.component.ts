@@ -13,8 +13,7 @@ import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { CartFacadeService } from '../../../../abstraction/cart.facade.service';
-import { ProductFacadeService } from '../../../../abstraction/product.facade.service';
+import { ProductDetailFacadeService } from '../../../../abstraction/product-detail.facade.service';
 import { PageFromEnum } from '../../../../domain/enum/page-from.enum';
 import { Product } from '../../../../domain/model/product';
 import { QuantityControlsComponent } from '../../../components/quantity-controls/quantity-controls.component';
@@ -56,8 +55,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly productFacade: ProductFacadeService,
-    private readonly cartFacade: CartFacadeService,
+    private readonly productFacade: ProductDetailFacadeService,
     private readonly messageService: MessageService
   ) {}
 
@@ -94,7 +92,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToCartData(): void {
-    this.cartFacade.localCartItems$.pipe(takeUntil(this.destroy$)).subscribe((cartItems) => {
+    this.productFacade.localCartItems$.pipe(takeUntil(this.destroy$)).subscribe((cartItems) => {
       if (this.product) {
         const cartItem = cartItems.find((item) => item.productId === this.product!.id);
         this.isInCart = !!cartItem;
@@ -105,19 +103,19 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
 
   updateQuantity(newQuantity: number): void {
     if (this.product) {
-      this.cartFacade.updateLocalCartQuantity(this.product.id, newQuantity);
+      this.productFacade.updateLocalCartQuantity(this.product.id, newQuantity);
     }
   }
 
   removeFromCart(): void {
     if (this.product) {
-      this.cartFacade.removeFromLocalCart(this.product.id);
+      this.productFacade.removeFromLocalCart(this.product.id);
     }
   }
 
   addToCart(): void {
     if (this.product) {
-      this.cartFacade.addToLocalCart(this.product.id, this.cartQuantity);
+      this.productFacade.addToLocalCart(this.product.id, this.cartQuantity);
     }
   }
 

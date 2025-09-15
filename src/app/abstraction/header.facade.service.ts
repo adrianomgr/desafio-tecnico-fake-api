@@ -8,7 +8,6 @@ import { AuthApiService } from '@app/infrastructure/api/auth.api.service';
 export class HeaderFacadeService {
   constructor(private readonly authApiService: AuthApiService) {}
 
-  // Fazer logout
   logout(): void {
     this.authApiService.logout();
   }

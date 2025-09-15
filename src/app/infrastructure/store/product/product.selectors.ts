@@ -1,5 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { ProductState, adapter } from './product.reducer';
+import { ProductState } from '../../../domain/interface/product-state.interface';
+import { adapter } from './product.reducer';
 
 export const selectProductState = createFeatureSelector<ProductState>('products');
 
@@ -38,14 +39,12 @@ export const selectFilteredProducts = createSelector(
   (products, selectedCategory, searchTerm, sortOrder) => {
     let filteredProducts = [...products];
 
-    // Filter by category
     if (selectedCategory) {
       filteredProducts = filteredProducts.filter(
         (product) => product.category === selectedCategory
       );
     }
 
-    // Filter by search term
     if (searchTerm.trim()) {
       const term = searchTerm.toLowerCase().trim();
       filteredProducts = filteredProducts.filter(
@@ -56,7 +55,6 @@ export const selectFilteredProducts = createSelector(
       );
     }
 
-    // Sort products
     if (sortOrder) {
       filteredProducts.sort((a, b) => {
         if (sortOrder === 'asc') {

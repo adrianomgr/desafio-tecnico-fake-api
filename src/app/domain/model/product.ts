@@ -28,3 +28,11 @@ export interface Category {
   name: string;
   count?: number;
 }
+
+export interface ProductError {
+  message: string;
+  status?: number;
+  statusText?: string;
+  url?: string;
+  error?: unknown;
+}

@@ -20,6 +20,10 @@ export class UserApiService {
       .pipe(map((users) => users.map((user) => new User(user))));
   }
 
+  getUserById(id: number): Observable<User> {
+    return this.http.get<User>(`${this.baseUrl}/users/${id}`).pipe(map((user) => new User(user)));
+  }
+
   createUser(user: CreateUserRequest): Observable<User> {
     const userData = {
       email: user.email,

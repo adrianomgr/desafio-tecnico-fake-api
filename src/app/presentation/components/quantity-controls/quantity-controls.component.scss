@@ -12,9 +12,9 @@
       justify-content: space-between;
       width: 100%;
       padding: 0.5rem;
-      background: #f8f9fa;
+      background: var(--p-surface-50);
       border-radius: 8px;
-      border: 1px solid #e9ecef;
+      border: 1px solid var(--p-surface-border);
 
       .quantity-btn {
         ::ng-deep .p-button {
@@ -48,24 +48,24 @@
         &--minus {
           ::ng-deep .p-button {
             &.p-button-danger {
-              background: #dc3545;
-              border-color: #dc3545;
+              background: var(--p-red-500);
+              border-color: var(--p-red-500);
               color: white;
 
               &:hover:not(:disabled) {
-                background: #c82333;
-                border-color: #c82333;
+                background: var(--p-red-600);
+                border-color: var(--p-red-600);
               }
             }
 
             &.p-button-secondary {
-              background: #6c757d;
-              border-color: #6c757d;
+              background: var(--p-surface-500);
+              border-color: var(--p-surface-500);
               color: white;
 
               &:hover:not(:disabled) {
-                background: #545b62;
-                border-color: #545b62;
+                background: var(--p-surface-600);
+                border-color: var(--p-surface-600);
               }
             }
           }
@@ -73,13 +73,13 @@
 
         &--plus {
           ::ng-deep .p-button {
-            background: #28a745;
-            border-color: #28a745;
+            background: var(--p-green-500);
+            border-color: var(--p-green-500);
             color: white;
 
             &:hover:not(:disabled) {
-              background: #218838;
-              border-color: #218838;
+              background: var(--p-green-600);
+              border-color: var(--p-green-600);
             }
           }
         }
@@ -88,13 +88,13 @@
       .quantity-display {
         font-size: 1.1rem;
         font-weight: 600;
-        color: #2c3e50;
+        color: var(--p-text-color);
         flex: 1;
         text-align: center;
-        background: white;
+        background: var(--p-surface-0);
         padding: 0.5rem;
         border-radius: 4px;
-        border: 1px solid #dee2e6;
+        border: 1px solid var(--p-surface-border);
         margin: 0 0.5rem;
       }
     }

@@ -9,8 +9,8 @@
   <ng-template pTemplate="header">
     <div class="product-image-container">
       <img
+        alt="{{ product.title }}"
         [src]="product.image"
-        [alt]="product.title"
         [title]="product.title"
         class="product-image"
         loading="lazy"

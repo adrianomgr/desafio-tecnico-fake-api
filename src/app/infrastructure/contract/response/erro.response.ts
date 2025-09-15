@@ -5,7 +5,7 @@ export class ErroResponse {
   status: number;
   statusText: string;
   message: string;
-  error: any;
+  error: unknown;
   url?: string;
   timestamp: Date;
 
@@ -19,7 +19,6 @@ export class ErroResponse {
   }
 
   static converter(httpError: HttpErrorResponse, messageService?: MessageService): ErroResponse {
-    // Extrair a mensagem de erro de forma segura
     let errorMessage = 'Erro desconhecido';
 
     if (httpError.error) {
@@ -45,7 +44,6 @@ export class ErroResponse {
       });
     }
 
-    // Criar e retornar o ErroResponse
     return new ErroResponse({
       status: httpError.status,
       statusText: httpError.statusText,

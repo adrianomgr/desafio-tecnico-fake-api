@@ -11,6 +11,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { CartFacadeService } from '../../../abstraction/cart.facade.service';
 import { PageFromEnum } from '../../../domain/enum/page-from.enum';
 import { Product } from '../../../domain/model/product';
+import { formatCurrency } from '../../../infrastructure/utils';
 import { CategoryLabelPipe } from '../../pipe/category-label.pipe';
 import { CategorySeverityPipe } from '../../pipe/category-severity.pipe';
 import { QuantityControlsComponent } from '../quantity-controls/quantity-controls.component';
@@ -54,7 +55,6 @@ export class ProductCardComponent implements OnInit, OnDestroy {
   readonly PageFromEnum = PageFromEnum;
 
   ngOnInit(): void {
-    // Subscribe to cart items to check if this product is in cart
     this.cartFacade.localCartItems$.pipe(takeUntil(this.destroy$)).subscribe((cartItems) => {
       const cartItem = cartItems.find((item) => item.productId === this.product.id);
       this.isInCart = !!cartItem;
@@ -72,10 +72,7 @@ export class ProductCardComponent implements OnInit, OnDestroy {
   }
 
   formatCurrency(value: number): string {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(value);
+    return formatCurrency(value);
   }
 
   onCardClick(): void {

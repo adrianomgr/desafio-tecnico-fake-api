@@ -1,17 +1,8 @@
-import { createEntityAdapter, EntityAdapter, EntityState } from '@ngrx/entity';
+import { createEntityAdapter, EntityAdapter } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
+import { ProductState } from '../../../domain/interface/product-state.interface';
 import { Product } from '../../../domain/model/product';
 import * as ProductActions from './product.actions';
-
-export interface ProductState extends EntityState<Product> {
-  selectedProduct: Product | null;
-  categories: string[];
-  selectedCategory: string | null;
-  searchTerm: string;
-  sortOrder: 'asc' | 'desc' | null;
-  loading: boolean;
-  error: any;
-}
 
 export const adapter: EntityAdapter<Product> = createEntityAdapter<Product>();
 
@@ -28,7 +19,6 @@ export const initialState: ProductState = adapter.getInitialState({
 export const productReducer = createReducer(
   initialState,
 
-  // Load Products
   on(ProductActions.loadProducts, (state) => ({
     ...state,
     loading: true,
@@ -46,7 +36,6 @@ export const productReducer = createReducer(
     error,
   })),
 
-  // Load Products By Category
   on(ProductActions.loadProductsByCategory, (state) => ({
     ...state,
     loading: true,
@@ -64,7 +53,6 @@ export const productReducer = createReducer(
     error,
   })),
 
-  // Load Categories
   on(ProductActions.loadCategories, (state) => ({
     ...state,
     loading: true,
@@ -81,7 +69,6 @@ export const productReducer = createReducer(
     error,
   })),
 
-  // Load Single Product
   on(ProductActions.loadProduct, (state) => ({
     ...state,
     loading: true,
@@ -98,64 +85,6 @@ export const productReducer = createReducer(
     error,
   })),
 
-  // Create Product
-  on(ProductActions.createProduct, (state) => ({
-    ...state,
-    loading: true,
-    error: null,
-  })),
-  on(ProductActions.createProductSuccess, (state, { product }) =>
-    adapter.addOne(product, {
-      ...state,
-      loading: false,
-    })
-  ),
-  on(ProductActions.createProductFailure, (state, { error }) => ({
-    ...state,
-    loading: false,
-    error,
-  })),
-
-  // Update Product
-  on(ProductActions.updateProduct, (state) => ({
-    ...state,
-    loading: true,
-    error: null,
-  })),
-  on(ProductActions.updateProductSuccess, (state, { product }) =>
-    adapter.updateOne(
-      { id: product.id, changes: product },
-      {
-        ...state,
-        loading: false,
-      }
-    )
-  ),
-  on(ProductActions.updateProductFailure, (state, { error }) => ({
-    ...state,
-    loading: false,
-    error,
-  })),
-
-  // Delete Product
-  on(ProductActions.deleteProduct, (state) => ({
-    ...state,
-    loading: true,
-    error: null,
-  })),
-  on(ProductActions.deleteProductSuccess, (state, { id }) =>
-    adapter.removeOne(id, {
-      ...state,
-      loading: false,
-    })
-  ),
-  on(ProductActions.deleteProductFailure, (state, { error }) => ({
-    ...state,
-    loading: false,
-    error,
-  })),
-
-  // Filter Actions
   on(ProductActions.setSelectedCategory, (state, { category }) => ({
     ...state,
     selectedCategory: category,
@@ -169,6 +98,5 @@ export const productReducer = createReducer(
     sortOrder,
   })),
 
-  // Clear State
   on(ProductActions.clearProductState, () => initialState)
 );

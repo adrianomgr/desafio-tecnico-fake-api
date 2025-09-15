@@ -5,11 +5,11 @@
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 25px var(--p-surface-300);
   }
 
   &:focus {
-    outline: 2px solid #667eea;
+    outline: 2px solid var(--p-primary-color);
     outline-offset: 2px;
   }
 
@@ -19,7 +19,7 @@
     flex-direction: column;
     border-radius: 12px;
     overflow: hidden;
-    border: 1px solid #e9ecef;
+    border: 1px solid var(--p-surface-border);
 
     .p-card-header {
       padding: 0;
@@ -40,13 +40,12 @@
       .p-card-footer {
         margin-top: auto;
         padding-top: 1rem;
-        flex-shrink: 0; // Impede que o footer seja comprimido
+        flex-shrink: 0;
       }
     }
   }
 }
 
-// Product image container
 .product-image-container {
   position: relative;
   height: 200px;
@@ -73,14 +72,13 @@
       font-size: 0.75rem;
       padding: 0.25rem 0.75rem;
       border-radius: 20px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 2px 8px var(--p-surface-300);
     }
   }
 }
 
-// Product content
 .product-content {
-  flex: 1; // Garante que o conteúdo ocupe todo o espaço disponível
+  flex: 1;
   display: flex;
   flex-direction: column;
 
@@ -88,7 +86,7 @@
     min-height: 45px;
     font-size: 1.1rem;
     font-weight: 600;
-    color: #2c3e50;
+    color: var(--p-text-color);
     margin-bottom: 0.75rem;
     line-height: 1.4;
     display: -webkit-box;
@@ -101,7 +99,7 @@
   .product-description {
     min-height: 65px;
     font-size: 0.9rem;
-    color: #7f8c8d;
+    color: var(--p-text-secondary-color);
     line-height: 1.5;
     margin-bottom: 1rem;
     display: -webkit-box;
@@ -121,29 +119,28 @@
       .p-rating-item {
         .p-rating-icon {
           font-size: 0.9rem;
-          color: #f39c12;
+          color: var(--p-yellow-500);
         }
       }
     }
 
     .rating-count {
       font-size: 0.85rem;
-      color: #7f8c8d;
+      color: var(--p-text-secondary-color);
     }
   }
 
   .product-price {
-    margin-top: auto; // Empurra o preço para o final do conteúdo
+    margin-top: auto;
 
     .price-value {
       font-size: 1.25rem;
       font-weight: 700;
-      color: #27ae60;
+      color: var(--p-green-500);
     }
   }
 }
 
-// Product actions
 .product-actions {
   display: flex;
   flex-direction: column;
@@ -153,8 +150,8 @@
     .add-to-cart-btn {
       ::ng-deep .p-button {
         width: 100%;
-        background: #27ae60;
-        border-color: #27ae60;
+        background: var(--p-green-500);
+        border-color: var(--p-green-500);
         padding: 0.75rem 1rem;
         font-size: 1rem;
         font-weight: 600;
@@ -162,10 +159,10 @@
         transition: all 0.3s ease;
 
         &:hover {
-          background: #219a52;
-          border-color: #219a52;
+          background: var(--p-green-600);
+          border-color: var(--p-green-600);
           transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+          box-shadow: 0 4px 12px var(--p-green-200);
         }
       }
     }
@@ -181,7 +178,6 @@
   }
 }
 
-// Variant styles
 .product-card--home {
   .product-image-container {
     height: 180px;
@@ -206,7 +202,6 @@
   }
 }
 
-// Responsive adjustments
 @media (max-width: 768px) {
   .product-actions {
     .quantity-section {

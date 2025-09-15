@@ -9,18 +9,18 @@ import { ImageModule } from 'primeng/image';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
-import { combineLatest, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CartFacadeService } from '../../../../abstraction/cart.facade.service';
-import { ProductFacadeService } from '../../../../abstraction/product.facade.service';
 import { PageFromEnum } from '../../../../domain/enum/page-from.enum';
-import { CartProduct } from '../../../../domain/model/cart';
+import { CartError } from '../../../../domain/model/cart';
 import { Product } from '../../../../domain/model/product';
+import { PublicCartItem } from '../../../../domain/model/public-cart';
 import { QuantityControlsComponent } from '../../../components/quantity-controls/quantity-controls.component';
 import { CategoryLabelPipe } from '../../../pipe/category-label.pipe';
 import { CategorySeverityPipe } from '../../../pipe/category-severity.pipe';
 
-interface CartItemWithProduct extends CartProduct {
+interface CartItemWithProduct extends PublicCartItem {
   product: Product | null;
 }
 
@@ -48,22 +48,19 @@ export class CartViewComponent implements OnInit, OnDestroy {
 
   cartItems: CartItemWithProduct[] = [];
   loading = false;
-  error: any = null;
+  error: CartError | null = null;
 
   readonly PageFromEnum = PageFromEnum;
   updatingItem: number | null = null;
 
   constructor(
     private readonly cartFacade: CartFacadeService,
-    private readonly productFacade: ProductFacadeService,
     private readonly messageService: MessageService,
     private readonly router: Router
   ) {}
 
   ngOnInit(): void {
     this.subscribeToCartData();
-
-    // this.cartFacade.loadCarts();
   }
 
   ngOnDestroy(): void {
@@ -72,14 +69,10 @@ export class CartViewComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToCartData(): void {
-    combineLatest([
-      this.cartFacade.localCartItems$,
-      this.productFacade.products$,
-      this.cartFacade.loading$,
-      this.cartFacade.error$,
-    ])
+    this.cartFacade
+      .getCartViewData()
       .pipe(takeUntil(this.destroy$))
-      .subscribe(([cartItems, products, loading, error]) => {
+      .subscribe(({ cartItems, products, loading, error }) => {
         this.loading = loading;
         this.error = error;
 
@@ -88,8 +81,6 @@ export class CartViewComponent implements OnInit, OnDestroy {
           product: products.find((product) => product.id === cartItem.productId) || null,
         }));
       });
-
-    this.productFacade.loadProducts();
   }
 
   updateQuantity(productId: number, quantity: number): void {

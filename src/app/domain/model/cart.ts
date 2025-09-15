@@ -47,3 +47,11 @@ export interface CartProductWithDetails extends CartProduct {
   };
   subtotal?: number;
 }
+
+export interface CartError {
+  message: string;
+  status?: number;
+  statusText?: string;
+  url?: string;
+  error?: unknown;
+}

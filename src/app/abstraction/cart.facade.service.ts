@@ -1,84 +1,61 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { Cart, CartCreate, CartProduct, CartUpdate, CartWithDetails } from '../domain/model/cart';
-import { CartApiService } from '../infrastructure/api/cart.api.service';
-import * as CartActions from '../infrastructure/store/cart/cart.actions';
-import * as CartSelectors from '../infrastructure/store/cart/cart.selectors';
+import { Observable, combineLatest } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { CartViewData } from '../domain/interface/cart-view-data.interface';
+import { CartError } from '../domain/model/cart';
+import { PublicCartItem } from '../domain/model/public-cart';
+import * as ProductSelectors from '../infrastructure/store/product/product.selectors';
+import * as PublicCartActions from '../infrastructure/store/public-cart/public-cart.actions';
+import * as PublicCartSelectors from '../infrastructure/store/public-cart/public-cart.selectors';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CartFacadeService {
-  readonly carts$: Observable<Cart[]>;
-  readonly currentCart$: Observable<Cart | null>;
-  readonly localCartItems$: Observable<CartProduct[]>;
-  readonly localCartTotal$: Observable<number>;
+  readonly localCartItems$: Observable<PublicCartItem[]>;
   readonly localCartItemCount$: Observable<number>;
+  readonly localCartTotal$: Observable<number>;
   readonly loading$: Observable<boolean>;
-  readonly error$: Observable<any>;
+  readonly error$: Observable<CartError | null>;
 
-  constructor(private readonly store: Store, private readonly cartApiService: CartApiService) {
-    this.carts$ = this.store.select(CartSelectors.selectAllCarts);
-    this.currentCart$ = this.store.select(CartSelectors.selectCurrentCart);
-    this.localCartItems$ = this.store.select(CartSelectors.selectLocalCartItems);
-    this.localCartTotal$ = this.store.select(CartSelectors.selectLocalCartTotal);
-    this.localCartItemCount$ = this.store.select(CartSelectors.selectLocalCartItemCount);
-    this.loading$ = this.store.select(CartSelectors.selectCartsLoading);
-    this.error$ = this.store.select(CartSelectors.selectCartsError);
+  constructor(private readonly store: Store) {
+    this.localCartItems$ = this.store.select(PublicCartSelectors.selectCartItems);
+    this.localCartItemCount$ = this.store.select(PublicCartSelectors.selectCartItemCount);
+    this.localCartTotal$ = this.store.select(PublicCartSelectors.selectCartTotal);
+    this.loading$ = this.store.select(PublicCartSelectors.selectCartLoading);
+    this.error$ = this.store.select(PublicCartSelectors.selectCartError);
   }
 
-  loadCarts(): void {
-    this.store.dispatch(CartActions.loadCarts());
-  }
-
-  // Método específico para admin - carregar carrinhos com dados populados
-  loadCartsWithDetails(): Observable<CartWithDetails[]> {
-    return this.cartApiService.getAllCartsWithDetails();
-  }
-
-  loadUserCarts(userId: number): void {
-    this.store.dispatch(CartActions.loadUserCarts({ userId }));
-  }
-
-  loadCart(id: number): void {
-    this.store.dispatch(CartActions.loadCart({ id }));
-  }
-
-  createCart(cart: CartCreate): void {
-    this.store.dispatch(CartActions.createCart({ cart }));
-  }
-
-  updateCart(cart: CartUpdate): void {
-    this.store.dispatch(CartActions.updateCart({ cart }));
-  }
-
-  deleteCart(id: number): void {
-    this.store.dispatch(CartActions.deleteCart({ id }));
-  }
-
-  // Local Cart Actions (for managing cart in frontend before persisting)
   addToLocalCart(productId: number, quantity: number = 1): void {
-    this.store.dispatch(CartActions.addToLocalCart({ productId, quantity }));
+    this.store.dispatch(PublicCartActions.addToCart({ productId, quantity }));
   }
 
   removeFromLocalCart(productId: number): void {
-    this.store.dispatch(CartActions.removeFromLocalCart({ productId }));
+    this.store.dispatch(PublicCartActions.removeFromCart({ productId }));
   }
 
   updateLocalCartQuantity(productId: number, quantity: number): void {
-    this.store.dispatch(CartActions.updateLocalCartQuantity({ productId, quantity }));
+    this.store.dispatch(PublicCartActions.updateCartQuantity({ productId, quantity }));
   }
 
   clearLocalCart(): void {
-    this.store.dispatch(CartActions.clearLocalCart());
+    this.store.dispatch(PublicCartActions.clearCart());
   }
 
-  setCurrentCart(cart: Cart | null): void {
-    this.store.dispatch(CartActions.setCurrentCart({ cart }));
-  }
-
-  saveLocalCartToServer(userId: number): void {
-    this.store.dispatch(CartActions.saveLocalCartToServer({ userId }));
+  getCartViewData(): Observable<CartViewData> {
+    return combineLatest([
+      this.localCartItems$,
+      this.store.select(ProductSelectors.selectAllProducts),
+      this.loading$,
+      this.error$,
+    ]).pipe(
+      map(([cartItems, products, loading, error]) => ({
+        cartItems,
+        products,
+        loading,
+        error,
+      }))
+    );
   }
 }

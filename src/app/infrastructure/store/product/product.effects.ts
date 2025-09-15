@@ -57,40 +57,4 @@ export class ProductEffects {
       )
     );
   });
-
-  createProduct$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(ProductActions.createProduct),
-      switchMap(({ product }) =>
-        this.productApiService.createProduct(product).pipe(
-          map((createdProduct) => ProductActions.createProductSuccess({ product: createdProduct })),
-          catchError((error) => of(ProductActions.createProductFailure({ error })))
-        )
-      )
-    );
-  });
-
-  updateProduct$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(ProductActions.updateProduct),
-      switchMap(({ product }) =>
-        this.productApiService.updateProduct(product).pipe(
-          map((updatedProduct) => ProductActions.updateProductSuccess({ product: updatedProduct })),
-          catchError((error) => of(ProductActions.updateProductFailure({ error })))
-        )
-      )
-    );
-  });
-
-  deleteProduct$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(ProductActions.deleteProduct),
-      switchMap(({ id }) =>
-        this.productApiService.deleteProduct(id).pipe(
-          map(() => ProductActions.deleteProductSuccess({ id })),
-          catchError((error) => of(ProductActions.deleteProductFailure({ error })))
-        )
-      )
-    );
-  });
 }

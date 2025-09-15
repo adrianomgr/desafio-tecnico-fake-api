@@ -38,12 +38,4 @@ export class ProductApiService {
   deleteProduct(id: number): Observable<Product> {
     return this.http.delete<Product>(`${this.baseUrl}/products/${id}`);
   }
-
-  getLimitedProducts(limit: number): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.baseUrl}/products?limit=${limit}`);
-  }
-
-  getSortedProducts(sort: 'asc' | 'desc'): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.baseUrl}/products?sort=${sort}`);
-  }
 }

@@ -20,7 +20,6 @@ export class UserFacadeService {
     private readonly authApiService: AuthApiService
   ) {}
 
-  // Buscar todos os usuários
   getAllUsers(): Observable<User[]> {
     return this.userService.getAllUsers().pipe(
       map(UserResponse.converterLista),
@@ -28,7 +27,6 @@ export class UserFacadeService {
     );
   }
 
-  // Criar novo usuário
   createUser(user: UserCreate): Observable<User> {
     const createUserRequest = new CreateUserRequest(user);
 
@@ -38,7 +36,6 @@ export class UserFacadeService {
     );
   }
 
-  // Atualizar usuário
   updateUser(id: number, user: UpdateUserRequest): Observable<User> {
     return this.userService.updateUser(id, user).pipe(
       tap(() => {
@@ -50,7 +47,6 @@ export class UserFacadeService {
     );
   }
 
-  // Deletar usuário
   deleteUser(id: number): Observable<void> {
     return this.userService
       .deleteUser(id)

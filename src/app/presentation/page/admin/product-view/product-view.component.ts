@@ -59,7 +59,7 @@ export class ProductViewComponent implements OnInit, OnDestroy {
   productForm: FormGroup;
   selectedProduct: Product | null = null;
 
-  categoryOptions: any[] = [];
+  categoryOptions: { label: string; value: string }[] = [];
 
   constructor(
     private readonly productFacade: ProductFacadeService,
@@ -125,7 +125,10 @@ export class ProductViewComponent implements OnInit, OnDestroy {
     });
   }
 
-  onGlobalFilter(table: any, event: Event): void {
+  onGlobalFilter(
+    table: { filterGlobal: (value: string, matchMode: string) => void },
+    event: Event
+  ): void {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
   }
 

@@ -1,83 +1,63 @@
 import { Injectable } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { Product, ProductCreate, ProductUpdate } from '../domain/model/product';
-import * as ProductActions from '../infrastructure/store/product/product.actions';
-import * as ProductSelectors from '../infrastructure/store/product/product.selectors';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Product } from '../domain/model/product';
+import { ProductApiService } from '../infrastructure/api/product.api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductFacadeService {
-  // Selectors
-  readonly products$: Observable<Product[]>;
-  readonly filteredProducts$: Observable<Product[]>;
-  readonly selectedProduct$: Observable<Product | null>;
-  readonly categories$: Observable<string[]>;
-  readonly selectedCategory$: Observable<string | null>;
-  readonly searchTerm$: Observable<string>;
-  readonly sortOrder$: Observable<'asc' | 'desc' | null>;
-  readonly loading$: Observable<boolean>;
-  readonly error$: Observable<any>;
+  private readonly _products$ = new BehaviorSubject<Product[]>([]);
+  private readonly _loading$ = new BehaviorSubject<boolean>(false);
+  private readonly _error$ = new BehaviorSubject<string | null>(null);
 
-  constructor(private readonly store: Store) {
-    this.products$ = this.store.select(ProductSelectors.selectAllProducts);
-    this.filteredProducts$ = this.store.select(ProductSelectors.selectFilteredProducts);
-    this.selectedProduct$ = this.store.select(ProductSelectors.selectSelectedProduct);
-    this.categories$ = this.store.select(ProductSelectors.selectCategories);
-    this.selectedCategory$ = this.store.select(ProductSelectors.selectSelectedCategory);
-    this.searchTerm$ = this.store.select(ProductSelectors.selectSearchTerm);
-    this.sortOrder$ = this.store.select(ProductSelectors.selectSortOrder);
-    this.loading$ = this.store.select(ProductSelectors.selectProductsLoading);
-    this.error$ = this.store.select(ProductSelectors.selectProductsError);
-  }
+  readonly products$ = this._products$.asObservable();
+  readonly loading$ = this._loading$.asObservable();
+  readonly error$ = this._error$.asObservable();
 
-  // Actions
+  constructor(private readonly productApiService: ProductApiService) {}
+
   loadProducts(): void {
-    this.store.dispatch(ProductActions.loadProducts());
+    this._loading$.next(true);
+    this._error$.next(null);
+
+    this.productApiService.getAllProducts().subscribe({
+      next: (products) => {
+        this._products$.next(products);
+        this._loading$.next(false);
+      },
+      error: (error) => {
+        this._error$.next(error.message || 'Erro ao carregar produtos');
+        this._loading$.next(false);
+      },
+    });
   }
 
-  loadProductsByCategory(category: string): void {
-    this.store.dispatch(ProductActions.loadProductsByCategory({ category }));
+  getAllProducts(): Observable<Product[]> {
+    return this.productApiService.getAllProducts();
   }
 
-  loadCategories(): void {
-    this.store.dispatch(ProductActions.loadCategories());
+  getAllCategories(): Observable<string[]> {
+    return this.productApiService.getAllCategories();
   }
 
-  loadProduct(id: number): void {
-    this.store.dispatch(ProductActions.loadProduct({ id }));
+  loadCategories(): Observable<string[]> {
+    return this.productApiService.getAllCategories();
   }
 
-  createProduct(product: ProductCreate): void {
-    this.store.dispatch(ProductActions.createProduct({ product }));
+  loadProduct(id: number): Observable<Product> {
+    return this.productApiService.getProductById(id);
   }
 
-  updateProduct(product: ProductUpdate): void {
-    this.store.dispatch(ProductActions.updateProduct({ product }));
+  deleteProduct(id: number): Observable<Product> {
+    return this.productApiService.deleteProduct(id);
   }
 
-  deleteProduct(id: number): void {
-    this.store.dispatch(ProductActions.deleteProduct({ id }));
+  createProduct(product: any): Observable<Product> {
+    return this.productApiService.createProduct(product);
   }
 
-  setSelectedCategory(category: string | null): void {
-    this.store.dispatch(ProductActions.setSelectedCategory({ category }));
-  }
-
-  setSearchTerm(searchTerm: string): void {
-    this.store.dispatch(ProductActions.setSearchTerm({ searchTerm }));
-  }
-
-  setSortOrder(sortOrder: 'asc' | 'desc' | null): void {
-    this.store.dispatch(ProductActions.setSortOrder({ sortOrder }));
-  }
-
-  clearState(): void {
-    this.store.dispatch(ProductActions.clearProductState());
-  }
-
-  getProductById(id: number): Observable<Product | null> {
-    return this.store.select(ProductSelectors.selectProductById(id));
+  updateProduct(product: any): Observable<Product> {
+    return this.productApiService.updateProduct(product);
   }
 }

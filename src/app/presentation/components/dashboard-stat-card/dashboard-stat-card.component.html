@@ -1,0 +1,19 @@
+<p-card class="stat-card" [style]="{ height: '100%' }">
+  <ng-template pTemplate="content">
+    <div class="stat-content">
+      <div class="stat-header">
+        <div class="stat-icon" [style.color]="iconColor || 'var(--p-primary-color)'">
+          <i [class]="icon" aria-hidden="true"></i>
+        </div>
+      </div>
+
+      <div class="stat-body">
+        <h3 class="stat-title">{{ stat.title }}</h3>
+        <div class="stat-value">{{ stat.value }}</div>
+        @if (stat.description) {
+        <p class="stat-description">{{ stat.description }}</p>
+        }
+      </div>
+    </div>
+  </ng-template>
+</p-card>

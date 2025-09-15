@@ -8,9 +8,10 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TagModule } from 'primeng/tag';
 import { Subject, map } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ProductFacadeService } from '../../../../abstraction/product.facade.service';
+import { PublicHomeFacadeService } from '../../../../abstraction/public-home.facade.service';
 import { PageFromEnum } from '../../../../domain/enum/page-from.enum';
 import { Product } from '../../../../domain/model/product';
+import { formatCurrency } from '../../../../infrastructure/utils';
 import { ProductCardComponent } from '../../../components/product-card/product-card.component';
 import { CategoryLabelPipe } from '../../../pipe/category-label.pipe';
 import { CategorySeverityPipe } from '../../../pipe/category-severity.pipe';
@@ -45,12 +46,12 @@ export class PublicHomeComponent implements OnInit, OnDestroy {
   categoriesWithProducts: CategoryData[] = [];
   carouselAutoplayInterval = 5000; // Intervalo padrão
   isCarouselPaused = false; // Controla se o carousel está pausado
-  private autoplayTimer: any = null;
+  private autoplayTimer: ReturnType<typeof setInterval> | null = null;
 
   readonly PageFromEnum = PageFromEnum;
 
   constructor(
-    private readonly productFacade: ProductFacadeService,
+    private readonly productFacade: PublicHomeFacadeService,
     private readonly router: Router
   ) {}
 
@@ -90,11 +91,11 @@ export class PublicHomeComponent implements OnInit, OnDestroy {
 
     this.productFacade.products$
       .pipe(
-        map((products) => this.groupProductsByCategory(products)),
+        map((products: Product[]) => this.groupProductsByCategory(products)),
         takeUntil(this.destroy$)
       )
       .subscribe({
-        next: (categoriesData) => {
+        next: (categoriesData: CategoryData[]) => {
           this.categoriesWithProducts = categoriesData;
           this.loading = false;
           // Inicia o autoplay após carregar os dados
@@ -123,10 +124,7 @@ export class PublicHomeComponent implements OnInit, OnDestroy {
   }
 
   formatCurrency(value: number): string {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(value);
+    return formatCurrency(value);
   }
 
   trackByProductId(index: number, product: Product): number {

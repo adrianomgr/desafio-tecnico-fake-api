@@ -35,17 +35,17 @@
 }
 
 ::ng-deep .logout-button {
-  background-color: #e74c3c !important;
+  background-color: var(--p-red-500) !important;
   color: white !important;
-  border: 1px solid #e74c3c !important;
+  border: 1px solid var(--p-red-500) !important;
 
   .p-button-icon {
     color: white !important;
   }
 
   &:hover {
-    background-color: #c0392b !important;
-    border-color: #c0392b !important;
+    background-color: var(--p-red-600) !important;
+    border-color: var(--p-red-600) !important;
     color: white !important;
 
     .p-button-icon {
@@ -54,7 +54,7 @@
   }
 
   &:focus {
-    box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.3) !important;
-    background-color: #e74c3c !important;
+    box-shadow: 0 0 0 2px var(--p-red-200) !important;
+    background-color: var(--p-red-500) !important;
   }
 }

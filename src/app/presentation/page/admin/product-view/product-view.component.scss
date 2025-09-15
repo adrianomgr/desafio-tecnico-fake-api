@@ -12,8 +12,8 @@
 
 :host ::ng-deep .admin-dialog {
   .p-dialog-header {
-    background: var(--surface-50);
-    border-bottom: 1px solid var(--surface-border);
+    background: var(--p-surface-50);
+    border-bottom: 1px solid var(--p-surface-border);
   }
 
   .p-dialog-content {
@@ -43,7 +43,7 @@
 
     .form-label {
       font-weight: 600;
-      color: var(--text-color);
+      color: var(--p-text-color);
       font-size: 0.875rem;
     }
 
@@ -52,7 +52,7 @@
     }
 
     .form-error {
-      color: var(--red-500);
+      color: var(--p-red-500);
       font-size: 0.75rem;
       margin-top: 0.25rem;
     }

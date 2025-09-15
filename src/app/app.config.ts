@@ -18,10 +18,9 @@ import { providePrimeNG } from 'primeng/config';
 import { routes } from './app.routes';
 import { CartApiService } from './infrastructure/api/cart.api.service';
 import { authInterceptor } from './infrastructure/interceptor';
-import { CartEffects } from './infrastructure/store/cart/cart.effects';
-import { cartReducer } from './infrastructure/store/cart/cart.reducer';
 import { ProductEffects } from './infrastructure/store/product/product.effects';
 import { productReducer } from './infrastructure/store/product/product.reducer';
+import { publicCartReducer } from './infrastructure/store/public-cart/public-cart.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -42,10 +41,10 @@ export const appConfig: ApplicationConfig = {
       },
     }),
     provideStore({
+      publicCart: publicCartReducer,
       products: productReducer,
-      cart: cartReducer,
     }),
-    provideEffects([ProductEffects, CartEffects]),
+    provideEffects([ProductEffects]),
     provideStoreDevtools({
       maxAge: 25,
       logOnly: !isDevMode(),

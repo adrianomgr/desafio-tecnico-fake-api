@@ -11,8 +11,9 @@ import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { CartFacadeService } from '../../../../abstraction/cart.facade.service';
-import { CartWithDetails } from '../../../../domain/model/cart';
+import { CartAdminFacadeService } from '../../../../abstraction/cart-admin.facade.service';
+import { CartError, CartWithDetails } from '../../../../domain/model/cart';
+import { formatCurrency } from '../../../../infrastructure/utils';
 
 @Component({
   selector: 'app-cart-admin-view',
@@ -37,16 +38,17 @@ export class CartAdminViewComponent implements OnInit, OnDestroy {
 
   carts: CartWithDetails[] = [];
   loading = false;
-  error: any = null;
-  expandedRows: any = {};
+  error: CartError | null = null;
+  expandedRows: Record<string, boolean> = {};
 
   constructor(
-    private readonly cartFacade: CartFacadeService,
+    private readonly cartFacade: CartAdminFacadeService,
     private readonly messageService: MessageService
   ) {}
 
   ngOnInit(): void {
-    this.loadCartsWithDetails();
+    this.subscribeToData();
+    this.cartFacade.loadCartsWithDetails();
   }
 
   ngOnDestroy(): void {
@@ -54,35 +56,35 @@ export class CartAdminViewComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private loadCartsWithDetails(): void {
-    this.loading = true;
-    this.cartFacade
-      .loadCartsWithDetails()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (carts) => {
-          this.carts = carts;
-          this.loading = false;
-        },
-        error: (error) => {
-          this.error = error;
-          this.loading = false;
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Erro',
-            detail: 'Erro ao carregar carrinhos',
-            life: 3000,
-          });
-        },
-      });
+  private subscribeToData(): void {
+    this.cartFacade.cartsWithDetails$.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (carts) => {
+        this.carts = carts;
+        this.loading = false;
+      },
+      error: (error) => {
+        this.error = error;
+        this.loading = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Erro ao carregar carrinhos',
+          life: 3000,
+        });
+      },
+    });
   }
 
-  onGlobalFilter(table: any, event: Event): void {
+  onGlobalFilter(
+    table: { filterGlobal: (value: string, matchMode: string) => void },
+    event: Event
+  ): void {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
   }
 
   refreshCarts(): void {
-    this.loadCartsWithDetails();
+    this.loading = true;
+    this.cartFacade.refreshCartsWithDetails();
     this.messageService.add({
       severity: 'info',
       summary: 'Carregando',
@@ -107,10 +109,7 @@ export class CartAdminViewComponent implements OnInit, OnDestroy {
   }
 
   formatCurrency(value: number): string {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(value);
+    return formatCurrency(value);
   }
 
   toggleRow(cart: CartWithDetails): void {

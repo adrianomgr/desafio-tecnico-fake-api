@@ -1,4 +1,3 @@
-// Estilos específicos do cart-admin-view
 :host ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
   vertical-align: top;
 }
@@ -18,10 +17,9 @@
   object-fit: cover;
 }
 
-// Estilo para a tabela de produtos aninhada
 :host ::ng-deep .products-table {
   .p-datatable {
-    border: 1px solid var(--surface-border);
+    border: 1px solid var(--p-surface-border);
     border-radius: 6px;
     overflow: hidden;
   }
@@ -33,13 +31,13 @@
   }
 
   .p-datatable-thead > tr > th {
-    background: var(--surface-50);
-    border-bottom: 2px solid var(--surface-border);
+    background: var(--p-surface-50);
+    border-bottom: 2px solid var(--p-surface-border);
     font-weight: 600;
     font-size: 0.875rem;
     padding: 1rem 0.75rem;
     text-align: left;
-    color: var(--text-color);
+    color: var(--p-text-color);
 
     &.image-column {
       width: 80px;
@@ -58,10 +56,10 @@
   }
 
   .p-datatable-tbody > tr {
-    border-bottom: 1px solid var(--surface-border);
+    border-bottom: 1px solid var(--p-surface-border);
 
     &:hover {
-      background: var(--surface-50);
+      background: var(--p-surface-50);
     }
 
     &:last-child {
@@ -80,20 +78,17 @@
     }
 
     &:nth-child(3) {
-      // Coluna quantidade
       text-align: center;
       width: 120px;
     }
 
     &:nth-child(4) {
-      // Coluna subtotal
       text-align: right;
       width: 140px;
     }
   }
 }
 
-// Estilos para imagens pequenas na tabela aninhada
 .product-image-small {
   width: 2.5rem;
   height: 2.5rem;
@@ -101,15 +96,15 @@
   object-fit: cover;
   display: block;
   margin: 0 auto;
-  border: 1px solid var(--surface-border);
+  border: 1px solid var(--p-surface-border);
 }
 
 .product-image-placeholder {
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 6px;
-  background: var(--surface-100);
-  border: 1px solid var(--surface-border);
+  background: var(--p-surface-100);
+  border: 1px solid var(--p-surface-border);
   display: flex;
   align-items: center;
   justify-content: center;

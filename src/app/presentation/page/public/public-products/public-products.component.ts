@@ -8,9 +8,10 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SelectModule } from 'primeng/select';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ProductFacadeService } from '../../../../abstraction/product.facade.service';
+import { PublicProductsFacadeService } from '../../../../abstraction/public-products.facade.service';
 import { PageFromEnum } from '../../../../domain/enum/page-from.enum';
 import { Product } from '../../../../domain/model/product';
+import { formatCurrency } from '../../../../infrastructure/utils';
 import { ProductCardComponent } from '../../../components/product-card/product-card.component';
 import { CategoryLabelPipe } from '../../../pipe/category-label.pipe';
 
@@ -33,9 +34,8 @@ export class PublicProductsComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
   private readonly categoryLabelPipe = new CategoryLabelPipe();
 
-  // Produtos para exibição
-  allFilteredProducts: Product[] = []; // Todos os produtos filtrados
-  displayedProducts: Product[] = []; // Produtos atualmente exibidos
+  allFilteredProducts: Product[] = [];
+  displayedProducts: Product[] = [];
 
   // Configuração do scroll infinito
   private readonly itemsPerPage = 6;
@@ -54,7 +54,7 @@ export class PublicProductsComponent implements OnInit, OnDestroy {
   readonly PageFromEnum = PageFromEnum;
 
   constructor(
-    private readonly productFacade: ProductFacadeService,
+    private readonly productFacade: PublicProductsFacadeService,
     private readonly router: Router,
     private readonly route: ActivatedRoute
   ) {}
@@ -99,24 +99,21 @@ export class PublicProductsComponent implements OnInit, OnDestroy {
 
     this.loadingMore = true;
 
-    // Simula um pequeno delay para UX
-    setTimeout(() => {
-      const startIndex = this.currentPage * this.itemsPerPage;
-      const endIndex = startIndex + this.itemsPerPage;
-      const newItems = this.allFilteredProducts.slice(startIndex, endIndex);
+    const startIndex = this.currentPage * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    const newItems = this.allFilteredProducts.slice(startIndex, endIndex);
 
-      if (newItems.length > 0) {
-        this.displayedProducts = [...this.displayedProducts, ...newItems];
-        this.currentPage++;
+    if (newItems.length > 0) {
+      this.displayedProducts = [...this.displayedProducts, ...newItems];
+      this.currentPage++;
 
-        // Verifica se há mais itens
-        this.hasMoreItems = endIndex < this.allFilteredProducts.length;
-      } else {
-        this.hasMoreItems = false;
-      }
+      // Verifica se há mais itens
+      this.hasMoreItems = endIndex < this.allFilteredProducts.length;
+    } else {
+      this.hasMoreItems = false;
+    }
 
-      this.loadingMore = false;
-    }, 300);
+    this.loadingMore = false;
   }
 
   private loadProducts(): void {
@@ -150,8 +147,6 @@ export class PublicProductsComponent implements OnInit, OnDestroy {
           })),
         ];
 
-        // Se há uma categoria nos query parameters e as categorias foram carregadas,
-        // aplica a categoria selecionada
         this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
           if (params['category'] && categories.includes(params['category'])) {
             this.selectedCategory = params['category'];
@@ -159,8 +154,16 @@ export class PublicProductsComponent implements OnInit, OnDestroy {
           }
         });
       },
-      error: (error: any) => {
+      error: (error) => {
         console.error('Erro ao carregar categorias:', error);
+      },
+    });
+
+    this.productFacade.selectedCategory$.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (selectedCategory: string | null) => {
+        if (selectedCategory !== this.selectedCategory) {
+          this.selectedCategory = selectedCategory || '';
+        }
       },
     });
 
@@ -184,10 +187,7 @@ export class PublicProductsComponent implements OnInit, OnDestroy {
   }
 
   formatCurrency(value: number): string {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(value);
+    return formatCurrency(value);
   }
 
   goToLogin(): void {
