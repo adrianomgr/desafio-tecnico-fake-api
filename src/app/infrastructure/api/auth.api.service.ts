@@ -90,4 +90,12 @@ export class AuthApiService {
     const token = this.getToken();
     return token ? !this.jwtHelper.isTokenExpired(token) : false;
   }
+
+  canAccess(): boolean {
+    return this.isAuthenticated();
+  }
+
+  requiresLogin(): boolean {
+    return !this.isAuthenticated();
+  }
 }

@@ -7,14 +7,14 @@ export const authGuard: CanActivateFn = () => {
   const authService = inject(AuthApiService);
   const router = inject(Router);
 
+  const redirectToForbidden = () => {
+    router.navigate(['/forbidden']);
+    return false;
+  };
+
+  const allowAccess = () => true;
+
   return authService.isAuthenticated$.pipe(
-    map((isAuthenticated: boolean) => {
-      if (isAuthenticated) {
-        return true;
-      } else {
-        router.navigate(['/forbidden']);
-        return false;
-      }
-    })
+    map((isAuthenticated: boolean) => (isAuthenticated ? allowAccess() : redirectToForbidden()))
   );
 };
