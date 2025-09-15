@@ -8,33 +8,33 @@ import { Product, ProductCreate, ProductUpdate } from '../../domain/model/produc
 })
 export class ProductApiService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'https://fakestoreapi.com';
+  private readonly baseUrl = 'https://fakestoreapi.com/products';
 
   getAllProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.baseUrl}/products`);
+    return this.http.get<Product[]>(this.baseUrl);
   }
 
   getProductById(id: number): Observable<Product> {
-    return this.http.get<Product>(`${this.baseUrl}/products/${id}`);
+    return this.http.get<Product>(`${this.baseUrl}/${id}`);
   }
 
   getProductsByCategory(category: string): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.baseUrl}/products/category/${category}`);
+    return this.http.get<Product[]>(`${this.baseUrl}/category/${category}`);
   }
 
   getAllCategories(): Observable<string[]> {
-    return this.http.get<string[]>(`${this.baseUrl}/products/categories`);
+    return this.http.get<string[]>(`${this.baseUrl}/categories`);
   }
 
   createProduct(product: ProductCreate): Observable<Product> {
-    return this.http.post<Product>(`${this.baseUrl}/products`, product);
+    return this.http.post<Product>(this.baseUrl, product);
   }
 
   updateProduct(product: ProductUpdate): Observable<Product> {
-    return this.http.put<Product>(`${this.baseUrl}/products/${product.id}`, product);
+    return this.http.put<Product>(`${this.baseUrl}/${product.id}`, product);
   }
 
   deleteProduct(id: number): Observable<Product> {
-    return this.http.delete<Product>(`${this.baseUrl}/products/${id}`);
+    return this.http.delete<Product>(`${this.baseUrl}/${id}`);
   }
 }
