@@ -139,7 +139,66 @@ getProfile: ResourceRef<User | undefined> = resource({
 4. **Resource Trigger**: Recarregamento automático do perfil
 5. **State Management**: Atualização do estado de autenticação
 
-### 📝 Validações de Formulário Avançadas
+### � Sistema de Dashboard com Polling
+
+#### Atualização Automática com Countdown
+
+O dashboard implementa um sistema de polling automático que atualiza os dados a cada minuto, proporcionando informações sempre atualizadas com feedback visual em tempo real.
+
+**Implementação Técnica:**
+
+```typescript
+// Polling automático com countdown de 1 minuto
+private autoRefreshSubject = new BehaviorSubject<number>(60);
+public autoRefreshCountdown$ = this.autoRefreshSubject.asObservable();
+
+private startAutoRefresh(): void {
+  interval(1000).pipe(
+    takeUntil(this.destroy$),
+    tap(count => {
+      const remaining = 60 - (count % 60);
+      this.autoRefreshSubject.next(remaining);
+
+      if (remaining === 60) {
+        this.loadDashboardData();
+      }
+    })
+  ).subscribe();
+}
+```
+
+**Características do Sistema de Polling:**
+
+- **Countdown Visual**: Timer de 60 segundos exibido na interface
+- **BehaviorSubject**: Armazenamento reativo do estado do countdown
+- **Auto-refresh**: Recarregamento automático dos dados do dashboard
+- **Interval Operator**: RxJS interval para controle temporal preciso
+- **Memory Management**: takeUntil para prevenção de vazamentos de memória
+
+**Cache com BehaviorSubject:**
+
+```typescript
+// Cache de dados do dashboard
+private dashboardDataSubject = new BehaviorSubject<DashboardData | null>(null);
+public dashboardData$ = this.dashboardDataSubject.asObservable();
+
+private loadDashboardData(): void {
+  this.dashboardApiService.getDashboardStats().pipe(
+    tap(data => this.dashboardDataSubject.next(data)),
+    takeUntil(this.destroy$)
+  ).subscribe();
+}
+```
+
+**Fluxo de Atualização:**
+
+1. **Início**: Countdown inicia em 60 segundos
+2. **Decremento**: Timer diminui a cada segundo via interval
+3. **Reset**: Ao chegar em 0, recarrega dados e reinicia
+4. **Cache**: Dados armazenados em BehaviorSubject para acesso imediato
+5. **UI Update**: Interface atualizada automaticamente via observables
+
+### �📝 Validações de Formulário Avançadas
 
 #### Validadores Customizados
 
