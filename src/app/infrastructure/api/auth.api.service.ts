@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, resource, ResourceRef, signal, WritableSignal } from '@angular/core';
+import { inject, Injectable, resource, ResourceRef, signal, WritableSignal } from '@angular/core';
 import { User } from '@app/domain/model/user';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { BehaviorSubject, firstValueFrom, map, Observable, tap } from 'rxjs';
@@ -9,6 +9,9 @@ import { LoginResponse } from '../contract/response/login.response';
   providedIn: 'root',
 })
 export class AuthApiService {
+  private readonly http = inject(HttpClient);
+  private readonly jwtHelper = inject(JwtHelperService);
+
   private readonly baseUrl = 'https://fakestoreapi.com';
   private readonly isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   public idcurrentUser: WritableSignal<number | undefined> = signal(undefined);
@@ -17,7 +20,7 @@ export class AuthApiService {
 
   private readonly TOKEN_KEY = 'jwt_token';
 
-  constructor(private readonly http: HttpClient, private readonly jwtHelper: JwtHelperService) {
+  constructor() {
     this.initializeAuth();
   }
 

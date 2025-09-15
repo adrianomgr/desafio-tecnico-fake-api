@@ -37,12 +37,12 @@ describe('UserInitialsPipe', () => {
   });
 
   it('deve retornar "U" para nome null', () => {
-    const result = pipe.transform(null as any);
+    const result = pipe.transform(null!);
     expect(result).toBe('U');
   });
 
   it('deve retornar "U" para nome undefined', () => {
-    const result = pipe.transform(undefined as any);
+    const result = pipe.transform(undefined!);
     expect(result).toBe('U');
   });
 

@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { Product } from '../../../domain/model/product';
+import { Product, ProductError } from '../../../domain/model/product';
 
 export const loadProducts = createAction('[Product] Load Products');
 export const loadProductsSuccess = createAction(
@@ -8,7 +8,7 @@ export const loadProductsSuccess = createAction(
 );
 export const loadProductsFailure = createAction(
   '[Product] Load Products Failure',
-  props<{ error: any }>()
+  props<{ error: ProductError }>()
 );
 
 export const loadProductsByCategory = createAction(
@@ -21,7 +21,7 @@ export const loadProductsByCategorySuccess = createAction(
 );
 export const loadProductsByCategoryFailure = createAction(
   '[Product] Load Products By Category Failure',
-  props<{ error: any }>()
+  props<{ error: ProductError }>()
 );
 
 export const loadCategories = createAction('[Product] Load Categories');
@@ -31,7 +31,7 @@ export const loadCategoriesSuccess = createAction(
 );
 export const loadCategoriesFailure = createAction(
   '[Product] Load Categories Failure',
-  props<{ error: any }>()
+  props<{ error: ProductError }>()
 );
 
 export const loadProduct = createAction('[Product] Load Product', props<{ id: number }>());
@@ -41,7 +41,7 @@ export const loadProductSuccess = createAction(
 );
 export const loadProductFailure = createAction(
   '[Product] Load Product Failure',
-  props<{ error: any }>()
+  props<{ error: ProductError }>()
 );
 
 export const setSelectedCategory = createAction(

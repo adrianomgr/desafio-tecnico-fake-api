@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
@@ -53,11 +53,9 @@ export class PublicProductsComponent implements OnInit, OnDestroy {
 
   readonly PageFromEnum = PageFromEnum;
 
-  constructor(
-    private readonly productFacade: PublicProductsFacadeService,
-    private readonly router: Router,
-    private readonly route: ActivatedRoute
-  ) {}
+  private readonly productFacade = inject(PublicProductsFacadeService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   ngOnInit(): void {
     // Garante que a página inicia no topo
@@ -131,7 +129,7 @@ export class PublicProductsComponent implements OnInit, OnDestroy {
         this.resetPagination();
         this.loadMoreItems();
       },
-      error: (error: any) => {
+      error: (error: Error) => {
         console.error('Erro ao carregar produtos:', error);
       },
     });

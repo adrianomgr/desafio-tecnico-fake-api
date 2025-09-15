@@ -5,9 +5,6 @@ import { AuthApiService } from '../api/auth.api.service';
 import { authGuard } from './auth.guard';
 
 describe('AuthGuard', () => {
-  let authService: jasmine.SpyObj<AuthApiService>;
-  let router: jasmine.SpyObj<Router>;
-
   beforeEach(() => {
     const authSpy = jasmine.createSpyObj('AuthApiService', [], {
       isAuthenticated$: of(true),
@@ -20,9 +17,6 @@ describe('AuthGuard', () => {
         { provide: Router, useValue: routerSpy },
       ],
     });
-
-    authService = TestBed.inject(AuthApiService) as jasmine.SpyObj<AuthApiService>;
-    router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
   });
 
   it('deve ser criado', () => {

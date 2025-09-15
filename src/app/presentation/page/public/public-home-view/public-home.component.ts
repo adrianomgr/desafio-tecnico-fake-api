@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
@@ -50,10 +50,8 @@ export class PublicHomeComponent implements OnInit, OnDestroy {
 
   readonly PageFromEnum = PageFromEnum;
 
-  constructor(
-    private readonly productFacade: PublicHomeFacadeService,
-    private readonly router: Router
-  ) {}
+  private readonly productFacade = inject(PublicHomeFacadeService);
+  private readonly router = inject(Router);
 
   ngOnInit(): void {
     this.loadCategoriesWithProducts();

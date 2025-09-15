@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -50,13 +50,13 @@ export class SingUpViewComponent implements CanComponentDeactivate {
   isLoading = false;
   private formSubmitted = false;
 
-  constructor(
-    private readonly fbr: FormBuilder,
-    private readonly router: Router,
-    private readonly signUpFacade: SignUpFacadeService,
-    private readonly messageService: MessageService,
-    private readonly confirmationService: ConfirmationService
-  ) {
+  private readonly fbr = inject(FormBuilder);
+  private readonly router = inject(Router);
+  private readonly signUpFacade = inject(SignUpFacadeService);
+  private readonly messageService = inject(MessageService);
+  private readonly confirmationService = inject(ConfirmationService);
+
+  constructor() {
     this.signupForm = this.fbr.nonNullable.group({
       username: this.fbr.nonNullable.control('', [Validators.required, Validators.minLength(4)]),
       email: this.fbr.nonNullable.control('', [Validators.required, Validators.email]),

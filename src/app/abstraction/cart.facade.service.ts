@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -13,13 +13,15 @@ import * as PublicCartSelectors from '../infrastructure/store/public-cart/public
   providedIn: 'root',
 })
 export class CartFacadeService {
+  private readonly store = inject(Store);
+
   readonly localCartItems$: Observable<PublicCartItem[]>;
   readonly localCartItemCount$: Observable<number>;
   readonly localCartTotal$: Observable<number>;
   readonly loading$: Observable<boolean>;
   readonly error$: Observable<CartError | null>;
 
-  constructor(private readonly store: Store) {
+  constructor() {
     this.localCartItems$ = this.store.select(PublicCartSelectors.selectCartItems);
     this.localCartItemCount$ = this.store.select(PublicCartSelectors.selectCartItemCount);
     this.localCartTotal$ = this.store.select(PublicCartSelectors.selectCartTotal);
@@ -27,7 +29,7 @@ export class CartFacadeService {
     this.error$ = this.store.select(PublicCartSelectors.selectCartError);
   }
 
-  addToLocalCart(productId: number, quantity: number = 1): void {
+  addToLocalCart(productId: number, quantity = 1): void {
     this.store.dispatch(PublicCartActions.addToCart({ productId, quantity }));
   }
 

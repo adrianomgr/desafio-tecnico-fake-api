@@ -1,10 +1,10 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DashboardStats } from '@app/domain/model/dashboard';
 import { DashboardStatCardComponent } from './dashboard-stat-card.component';
 
 describe('DashboardStatCardComponent', () => {
   let component: DashboardStatCardComponent;
-  let fixture: any;
+  let fixture: ComponentFixture<DashboardStatCardComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

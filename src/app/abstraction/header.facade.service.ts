@@ -1,4 +1,4 @@
-import { Injectable, ResourceRef } from '@angular/core';
+import { Injectable, ResourceRef, inject } from '@angular/core';
 import { User } from '@app/domain/model/user';
 import { AuthApiService } from '@app/infrastructure/api/auth.api.service';
 
@@ -6,7 +6,7 @@ import { AuthApiService } from '@app/infrastructure/api/auth.api.service';
   providedIn: 'root',
 })
 export class HeaderFacadeService {
-  constructor(private readonly authApiService: AuthApiService) {}
+  private readonly authApiService = inject(AuthApiService);
 
   logout(): void {
     this.authApiService.logout();

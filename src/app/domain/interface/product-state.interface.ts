@@ -1,5 +1,5 @@
 import { EntityState } from '@ngrx/entity';
-import { Product } from '../model/product';
+import { Product, ProductError } from '../model/product';
 
 export interface ProductState extends EntityState<Product> {
   selectedProduct: Product | null;
@@ -8,5 +8,5 @@ export interface ProductState extends EntityState<Product> {
   searchTerm: string;
   sortOrder: 'asc' | 'desc' | null;
   loading: boolean;
-  error: any;
+  error: ProductError | null;
 }

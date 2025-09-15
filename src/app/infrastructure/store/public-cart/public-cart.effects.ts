@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
@@ -7,10 +7,8 @@ import * as PublicCartActions from './public-cart.actions';
 
 @Injectable()
 export class PublicCartEffects {
-  constructor(
-    private readonly actions$: Actions,
-    private readonly cartApiService: CartApiService
-  ) {}
+  private readonly actions$ = inject(Actions);
+  private readonly cartApiService = inject(CartApiService);
 
   // Effect para salvar no localStorage quando o carrinho for modificado
   saveToStorage$ = createEffect(

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { LoginFacadeService } from '@app/abstraction/login.facade.service';
@@ -43,12 +43,12 @@ export class LoginViewComponent implements OnInit, OnDestroy {
   showTestCredentials = false;
   private readonly destroy$ = new Subject<void>();
 
-  constructor(
-    private readonly formBuilder: FormBuilder,
-    private readonly router: Router,
-    private readonly messageService: MessageService,
-    private readonly loginFacade: LoginFacadeService
-  ) {
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly router = inject(Router);
+  private readonly messageService = inject(MessageService);
+  private readonly loginFacade = inject(LoginFacadeService);
+
+  constructor() {
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]],

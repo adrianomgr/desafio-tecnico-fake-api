@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -49,6 +49,11 @@ import { CategorySeverityPipe } from '../../../pipe/category-severity.pipe';
   styleUrls: ['./product-view.component.scss'],
 })
 export class ProductViewComponent implements OnInit, OnDestroy {
+  private readonly productFacade = inject(ProductFacadeService);
+  private readonly messageService = inject(MessageService);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly fb = inject(FormBuilder);
+
   private readonly destroy$ = new Subject<void>();
 
   products: Product[] = [];
@@ -61,12 +66,7 @@ export class ProductViewComponent implements OnInit, OnDestroy {
 
   categoryOptions: { label: string; value: string }[] = [];
 
-  constructor(
-    private readonly productFacade: ProductFacadeService,
-    private readonly messageService: MessageService,
-    private readonly confirmationService: ConfirmationService,
-    private readonly fb: FormBuilder
-  ) {
+  constructor() {
     this.productForm = this.createProductForm();
   }
 

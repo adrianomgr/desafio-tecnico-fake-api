@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserFacadeService } from '@app/abstraction/user-facade.service';
 import { User } from '@app/domain/model/user';
@@ -50,19 +50,17 @@ import { finalize } from 'rxjs';
   styleUrl: './users-view.component.scss',
 })
 export class UsersViewComponent implements OnInit {
+  private readonly fb = inject(FormBuilder);
+  private readonly messageService = inject(MessageService);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly userFacade = inject(UserFacadeService);
+
   users: User[] = [];
   loading = false;
   displayDialog = false;
   userForm!: FormGroup;
   isEditMode = false;
   selectedUser: User | null = null;
-
-  constructor(
-    private readonly fb: FormBuilder,
-    private readonly messageService: MessageService,
-    private readonly confirmationService: ConfirmationService,
-    private readonly userFacade: UserFacadeService
-  ) {}
 
   ngOnInit() {
     this.initForm();

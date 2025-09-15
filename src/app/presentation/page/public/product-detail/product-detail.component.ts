@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -15,7 +15,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ProductDetailFacadeService } from '../../../../abstraction/product-detail.facade.service';
 import { PageFromEnum } from '../../../../domain/enum/page-from.enum';
-import { Product } from '../../../../domain/model/product';
+import { Product, ProductError } from '../../../../domain/model/product';
 import { QuantityControlsComponent } from '../../../components/quantity-controls/quantity-controls.component';
 import { CategoryLabelPipe } from '../../../pipe/category-label.pipe';
 import { CategorySeverityPipe } from '../../../pipe/category-severity.pipe';
@@ -42,22 +42,20 @@ import { CategorySeverityPipe } from '../../../pipe/category-severity.pipe';
   styleUrls: ['./product-detail.component.scss'],
 })
 export class ProductDetailComponent implements OnInit, OnDestroy {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly productFacade = inject(ProductDetailFacadeService);
+  private readonly messageService = inject(MessageService);
+
   private readonly destroy$ = new Subject<void>();
 
   product: Product | null = null;
   loading = false;
-  error: any = null;
+  error: ProductError | null = null;
   cartQuantity = 0;
   isInCart = false;
 
   readonly PageFromEnum = PageFromEnum;
-
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly productFacade: ProductDetailFacadeService,
-    private readonly messageService: MessageService
-  ) {}
 
   ngOnInit(): void {
     this.loadProduct();

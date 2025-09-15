@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, OnDestroy } from '@angular/core';
+import { Component, effect, inject, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HeaderFacadeService } from '@app/abstraction/header.facade.service';
 import { User } from '@app/domain/model/user';
@@ -27,15 +27,15 @@ import { Subject } from 'rxjs';
   styleUrl: './admin-header.component.scss',
 })
 export class AdminHeaderComponent implements OnDestroy {
+  private readonly router = inject(Router);
+  private readonly headerFacade = inject(HeaderFacadeService);
+  private readonly confirmationService = inject(ConfirmationService);
+
   currentUser: User | null = null;
 
   private readonly destroy$ = new Subject<void>();
 
-  constructor(
-    private readonly router: Router,
-    private readonly headerFacade: HeaderFacadeService,
-    private readonly confirmationService: ConfirmationService
-  ) {
+  constructor() {
     effect(() => {
       const profileResource = this.headerFacade.getProfile;
 

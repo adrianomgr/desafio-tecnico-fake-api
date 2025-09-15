@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Cart, CartCreate, CartUpdate } from '../../domain/model/cart';
 
@@ -7,9 +7,8 @@ import { Cart, CartCreate, CartUpdate } from '../../domain/model/cart';
   providedIn: 'root',
 })
 export class CartApiService {
+  private readonly http = inject(HttpClient);
   private readonly baseUrl = 'https://fakestoreapi.com';
-
-  constructor(private readonly http: HttpClient) {}
 
   getAllCarts(): Observable<Cart[]> {
     return this.http.get<Cart[]>(`${this.baseUrl}/carts`);

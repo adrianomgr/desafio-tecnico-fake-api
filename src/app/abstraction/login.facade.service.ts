@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { User } from '@app/domain/model/user';
 import { AuthApiService } from '@app/infrastructure/api/auth.api.service';
 import { UserApiService } from '@app/infrastructure/api/user.api.service';
@@ -16,11 +16,9 @@ interface FakeStoreLoginResponse {
   providedIn: 'root',
 })
 export class LoginFacadeService {
-  constructor(
-    private readonly authApiService: AuthApiService,
-    private readonly userApiService: UserApiService,
-    private readonly messageService: MessageService
-  ) {}
+  private readonly authApiService = inject(AuthApiService);
+  private readonly userApiService = inject(UserApiService);
+  private readonly messageService = inject(MessageService);
 
   login(username: string, password: string): Observable<FakeStoreLoginResponse> {
     return this.authApiService.login(username, password).pipe(

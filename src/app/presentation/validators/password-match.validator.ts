@@ -7,8 +7,8 @@ import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
  * @returns ValidatorFn que retorna erro 'passwordMismatch' se as senhas não coincidirem
  */
 export function passwordMatchValidator(
-  passwordField: string = 'password',
-  confirmPasswordField: string = 'confirmPassword'
+  passwordField = 'password',
+  confirmPasswordField = 'confirmPassword'
 ): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const password = control.get(passwordField);

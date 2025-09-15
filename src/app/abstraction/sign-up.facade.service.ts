@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { User } from '@app/domain/model/user';
 import { UserCreate } from '@app/domain/model/user-create';
 import { CreateUserRequest } from '@app/infrastructure/contract/request/create-user.request';
@@ -13,7 +13,7 @@ import { UserResponse } from '../infrastructure/contract/response/user.response'
   providedIn: 'root',
 })
 export class SignUpFacadeService {
-  constructor(private readonly userService: UserApiService) {}
+  private readonly userService = inject(UserApiService);
 
   createUser(user: UserCreate): Observable<User> {
     const createUserRequest = new CreateUserRequest(user);

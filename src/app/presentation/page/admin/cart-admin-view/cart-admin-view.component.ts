@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -34,17 +34,15 @@ import { formatCurrency } from '../../../../infrastructure/utils';
   styleUrls: ['./cart-admin-view.component.scss'],
 })
 export class CartAdminViewComponent implements OnInit, OnDestroy {
+  private readonly cartFacade = inject(CartAdminFacadeService);
+  private readonly messageService = inject(MessageService);
+
   private readonly destroy$ = new Subject<void>();
 
   carts: CartWithDetails[] = [];
   loading = false;
   error: CartError | null = null;
   expandedRows: Record<string, boolean> = {};
-
-  constructor(
-    private readonly cartFacade: CartAdminFacadeService,
-    private readonly messageService: MessageService
-  ) {}
 
   ngOnInit(): void {
     this.subscribeToData();

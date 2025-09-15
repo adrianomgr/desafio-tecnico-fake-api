@@ -1,12 +1,14 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Product } from '../domain/model/product';
+import { Product, ProductCreate, ProductUpdate } from '../domain/model/product';
 import { ProductApiService } from '../infrastructure/api/product.api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductFacadeService {
+  private readonly productApiService = inject(ProductApiService);
+
   private readonly _products$ = new BehaviorSubject<Product[]>([]);
   private readonly _loading$ = new BehaviorSubject<boolean>(false);
   private readonly _error$ = new BehaviorSubject<string | null>(null);
@@ -14,8 +16,6 @@ export class ProductFacadeService {
   readonly products$ = this._products$.asObservable();
   readonly loading$ = this._loading$.asObservable();
   readonly error$ = this._error$.asObservable();
-
-  constructor(private readonly productApiService: ProductApiService) {}
 
   loadProducts(): void {
     this._loading$.next(true);
@@ -53,11 +53,11 @@ export class ProductFacadeService {
     return this.productApiService.deleteProduct(id);
   }
 
-  createProduct(product: any): Observable<Product> {
+  createProduct(product: ProductCreate): Observable<Product> {
     return this.productApiService.createProduct(product);
   }
 
-  updateProduct(product: any): Observable<Product> {
+  updateProduct(product: ProductUpdate): Observable<Product> {
     return this.productApiService.updateProduct(product);
   }
 }

@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, forkJoin, map, switchMap, tap } from 'rxjs';
-import { CartProduct, CartProductWithDetails, CartWithDetails } from '../domain/model/cart';
+import { Cart, CartProduct, CartProductWithDetails, CartWithDetails } from '../domain/model/cart';
 import { Product } from '../domain/model/product';
 import { User } from '../domain/model/user';
 import { CartApiService } from '../infrastructure/api/cart.api.service';
@@ -13,11 +13,9 @@ import { UserApiService } from '../infrastructure/api/user.api.service';
 export class CartAdminFacadeService {
   private readonly _cartsWithDetails$ = new BehaviorSubject<CartWithDetails[]>([]);
 
-  constructor(
-    private readonly cartApiService: CartApiService,
-    private readonly userApiService: UserApiService,
-    private readonly productApiService: ProductApiService
-  ) {}
+  private readonly cartApiService = inject(CartApiService);
+  private readonly userApiService = inject(UserApiService);
+  private readonly productApiService = inject(ProductApiService);
 
   get cartsWithDetails$() {
     return this._cartsWithDetails$.asObservable();
@@ -60,7 +58,11 @@ export class CartAdminFacadeService {
       .subscribe();
   }
 
-  private mapCartsWithDetails(carts: any[], users: User[], products: Product[]): CartWithDetails[] {
+  private mapCartsWithDetails(
+    carts: Cart[],
+    users: User[],
+    products: Product[]
+  ): CartWithDetails[] {
     return carts.map((cart) => {
       const user = users.find((u) => u.id === cart.userId);
       const productsWithDetails = this.mapCartProductsWithDetails(cart.products, products);

@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { inject, Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, combineLatest, map, Subject } from 'rxjs';
 import { DashboardStats } from '../domain/model/dashboard';
 import { Product } from '../domain/model/product';
@@ -10,6 +10,10 @@ import { UserApiService } from '../infrastructure/api/user.api.service';
 })
 export class DashboardFacadeService implements OnDestroy {
   private readonly AUTO_REFRESH_INTERVAL = 1 * 60; // 60 segundos
+
+  private readonly userApiService = inject(UserApiService);
+  private readonly cartApiService = inject(CartApiService);
+  private readonly productApiService = inject(ProductApiService);
 
   private readonly dashboardStatsSubject = new BehaviorSubject<DashboardStats[]>([]);
   readonly dashboardStats$ = this.dashboardStatsSubject.asObservable();
@@ -24,11 +28,7 @@ export class DashboardFacadeService implements OnDestroy {
 
   private countdownTimer?: number;
 
-  constructor(
-    private readonly userApiService: UserApiService,
-    private readonly cartApiService: CartApiService,
-    private readonly productApiService: ProductApiService
-  ) {
+  constructor() {
     this.loadDashboardStats();
     this.startCountdown();
   }

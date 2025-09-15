@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Product, ProductCreate, ProductUpdate } from '../../domain/model/product';
 
@@ -7,9 +7,8 @@ import { Product, ProductCreate, ProductUpdate } from '../../domain/model/produc
   providedIn: 'root',
 })
 export class ProductApiService {
+  private readonly http = inject(HttpClient);
   private readonly baseUrl = 'https://fakestoreapi.com';
-
-  constructor(private readonly http: HttpClient) {}
 
   getAllProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(`${this.baseUrl}/products`);

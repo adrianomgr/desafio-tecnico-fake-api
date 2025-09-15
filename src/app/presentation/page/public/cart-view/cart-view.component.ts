@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -53,11 +53,9 @@ export class CartViewComponent implements OnInit, OnDestroy {
   readonly PageFromEnum = PageFromEnum;
   updatingItem: number | null = null;
 
-  constructor(
-    private readonly cartFacade: CartFacadeService,
-    private readonly messageService: MessageService,
-    private readonly router: Router
-  ) {}
+  private readonly cartFacade = inject(CartFacadeService);
+  private readonly messageService = inject(MessageService);
+  private readonly router = inject(Router);
 
   ngOnInit(): void {
     this.subscribeToCartData();

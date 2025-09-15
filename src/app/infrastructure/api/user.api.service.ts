@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { User } from '../../domain/model/user';
@@ -10,18 +10,17 @@ import { UpdateUserRequest } from '../contract/request/update-user.request';
   providedIn: 'root',
 })
 export class UserApiService {
-  private readonly baseUrl = 'https://fakestoreapi.com';
-
-  constructor(private readonly http: HttpClient) {}
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = 'https://fakestoreapi.com/users';
 
   getAllUsers(): Observable<User[]> {
     return this.http
-      .get<User[]>(`${this.baseUrl}/users`)
+      .get<User[]>(`${this.baseUrl}`)
       .pipe(map((users) => users.map((user) => new User(user))));
   }
 
   getUserById(id: number): Observable<User> {
-    return this.http.get<User>(`${this.baseUrl}/users/${id}`).pipe(map((user) => new User(user)));
+    return this.http.get<User>(`${this.baseUrl}/${id}`).pipe(map((user) => new User(user)));
   }
 
   createUser(user: CreateUserRequest): Observable<User> {
@@ -32,7 +31,7 @@ export class UserApiService {
     };
 
     return this.http
-      .post<User>(`${this.baseUrl}/users`, userData)
+      .post<User>(`${this.baseUrl}`, userData)
       .pipe(map((createdUser) => new User(createdUser)));
   }
 
@@ -44,11 +43,11 @@ export class UserApiService {
     };
 
     return this.http
-      .put<User>(`${this.baseUrl}/users/${id}`, userData)
+      .put<User>(`${this.baseUrl}/${id}`, userData)
       .pipe(map((updatedUser) => new User(updatedUser)));
   }
 
   deleteUser(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/users/${id}`);
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 }
